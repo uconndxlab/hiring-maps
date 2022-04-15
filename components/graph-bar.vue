@@ -19,23 +19,45 @@ export default {
     chartId: {
       type: String,
       default: 'bar-chart'
+    },
+    labels: {
+      type: Array,
+      required: true
+    },
+    datasets: {
+      type: Array,
+      required: true
+    },
+    vertical: {
+      type: Boolean,
+      default: false
+    },
+    additionalConfig: {
+      type: Object,
+      default: () => {}
     }
   },
   data () {
     return {
-      chartData: {
-        labels: ['Monday', 'Tuesday'],
-        datasets: [
-          {
-            label: 'One',
-            backgroundColor: 'blue',
-            data: [12, 80]
-          }
-        ]
-      },
-      chartOptions: {
+    }
+  },
+  computed: {
+    chartOptions () {
+      const options = {
         responsive: true,
-        indexAxis: 'y'
+        ...this.additionalConfig
+      }
+
+      if (!this.vertical) {
+        options.indexAxis = 'y'
+      }
+
+      return options
+    },
+    chartData () {
+      return {
+        labels: this.labels,
+        datasets: this.datasets
       }
     }
   }

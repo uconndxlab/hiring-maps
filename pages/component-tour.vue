@@ -10,7 +10,12 @@
         </p>
       </card-text>
       <card-text :title="`Top Industries for { job }`">
-        <graph-bar />
+        <graph-bar
+          :labels="graphLabels"
+          :datasets="graphDatasets"
+          :additional-config="graphAdditionalConfig"
+          :chart-id="`example-bar-graph`"
+        />
       </card-text>
     </v-col>
     <v-col cols="12" sm="6">
@@ -19,3 +24,38 @@
     </v-col>
   </v-row>
 </template>
+
+<script>
+export default {
+  data () {
+    return {
+      graphLabels: ['Technology', 'Finance', 'Manufacturing', 'Retail'],
+      graphDatasets: [
+        {
+          backgroundColor: 'rgba(103, 197, 135, 1)',
+          data: [0.6, 0.25, 0.15, 0.02]
+        }
+      ],
+      graphAdditionalConfig: {
+        barPercentage: 0.5,
+        scales: {
+          x: {
+            max: 1,
+            ticks: {
+              count: 3,
+              format: {
+                style: 'percent'
+              }
+            }
+          }
+        },
+        plugins: {
+          legend: {
+            display: false
+          }
+        }
+      }
+    }
+  }
+}
+</script>
