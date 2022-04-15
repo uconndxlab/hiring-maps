@@ -1,5 +1,5 @@
 <template>
-  <v-card class="mx-auto px-6 py-4">
+  <v-card class="mx-auto px-6 py-4 mb-5">
     <v-card-text>
       <div class="mb-3">
         {{ title }}
