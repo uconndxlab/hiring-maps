@@ -32,6 +32,10 @@ export default {
       type: Boolean,
       default: false
     },
+    percent: {
+      type: Boolean,
+      default: true
+    },
     additionalConfig: {
       type: Object,
       default: () => {}
