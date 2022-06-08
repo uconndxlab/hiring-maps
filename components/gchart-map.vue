@@ -1,40 +1,54 @@
 <template>
   <div class="map-container">
-    <div :id="domElementId" />
+    <v-row justify="center">
+      <v-col cols="10" offset="1">
+        <div :id="domElementId" />
+      </v-col>
+    </v-row>
   </div>
 </template>
 
 <script>
 /* global google */
+import { mapGetters } from 'vuex'
 
 export default {
+  props: {
+    waitHook: {
+      type: String,
+      default: 'primary/setDataHasBeenRetrieved'
+    }
+  },
   data () {
     return {
       chart: null,
       domElementId: 'map-element'
     }
   },
-  mounted () {
-    google.charts.load('current', {
-      packages: ['geochart'],
-      mapsApiKey: this.$config.GOOGLE_MAPS_API_KEY
+  computed: {
+    ...mapGetters({
+      bootstrapped: 'primary/bootstrapped',
+      mapData: 'primary/mapData'
     })
-    google.charts.setOnLoadCallback(this.drawMap)
+  },
+  mounted () {
+    google.charts.setOnLoadCallback(this.initiateMapDraw)
   },
   methods: {
+    initiateMapDraw () {
+      if (!this.bootstrapped) {
+        const unsubscribe = this.$store.subscribe((mutation) => {
+          if (mutation.type === this.waitHook) {
+            console.log('Data has been retrieved')
+            this.drawMap()
+            unsubscribe()
+          }
+        })
+      } else {
+        this.drawMap()
+      }
+    },
     drawMap () {
-      const data = google.visualization.arrayToDataTable([
-        ['id', 'name', 'Value'],
-        ['CT-01', 'Fairfield', 888],
-        ['CT-02', 'Hartford', 233],
-        ['CT-03', 'Litchfield', 300],
-        ['CT-04', 'Middlesex', 500],
-        ['CT-05', 'New Haven', 600],
-        ['CT-06', 'New London', 700],
-        ['CT-07', 'Tolland', 800],
-        ['CT-08', 'Windham', 900]
-      ])
-
       google.visualization.GeoChart.setMapsSource('/maps_counties')
 
       const options = {
@@ -43,7 +57,15 @@ export default {
       }
 
       this.chart = new google.visualization.GeoChart(document.getElementById(this.domElementId))
-      this.chart.draw(data, options)
+      google.visualization.events.addListener(this.chart, 'ready', this.chartReady)
+      google.visualization.events.addListener(this.chart, 'select', this.chartSelect)
+      this.chart.draw(this.mapData, options)
+    },
+    chartReady () {
+      console.log('Chart is ready.')
+    },
+    chartSelect (e) {
+      console.log('Chart was selected.', e)
     }
   }
 }

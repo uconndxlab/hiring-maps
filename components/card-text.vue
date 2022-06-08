@@ -6,11 +6,7 @@
       {{ title }}
     </v-card-title>
     <v-card-text>
-      <div
-        class="
-      text--primary
-      text-body-1"
-      >
+      <div class="text--primary text-body-1">
         <slot />
       </div>
     </v-card-text>

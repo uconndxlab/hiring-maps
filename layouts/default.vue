@@ -47,6 +47,8 @@
 </template>
 
 <script>
+/* global google */
+
 import { mapActions } from 'vuex'
 
 export default {
@@ -63,6 +65,11 @@ export default {
           to: '/'
         },
         {
+          icon: 'mdi-format-list-bulleted',
+          title: 'Occupations',
+          to: '/occupations'
+        },
+        {
           icon: 'mdi-bookmark-box-multiple',
           title: 'Component Library',
           to: '/component-tour'
@@ -72,11 +79,15 @@ export default {
     }
   },
   created () {
-    this.getCounties()
+    google.charts.load('current', {
+      packages: ['geochart'],
+      mapsApiKey: this.$config.GOOGLE_MAPS_API_KEY
+    })
+    this.bootstrap()
   },
   methods: {
     ...mapActions({
-      getCounties: 'primary/getCounties'
+      bootstrap: 'primary/bootstrap'
     })
   }
 
