@@ -17,7 +17,7 @@ export default {
   mounted () {
     google.charts.load('current', {
       packages: ['geochart'],
-      mapsApiKey: 'AIzaSyDe-Tkd55CpIllZKMtHojm3tPOWNVh0h_M'
+      mapsApiKey: this.$config.GOOGLE_MAPS_API_KEY
     })
     google.charts.setOnLoadCallback(this.drawMap)
   },
