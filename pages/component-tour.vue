@@ -1,5 +1,8 @@
 <template>
   <v-row justify="center">
+    <v-col cols="12">
+      <gchart-map />
+    </v-col>
     <v-col cols="12" sm="6">
       <card-text :title="`Job Description`">
         <p>

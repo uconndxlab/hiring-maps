@@ -47,12 +47,15 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
+
 export default {
   name: 'DefaultLayout',
   data () {
     return {
       clipped: true,
       drawer: false,
+      fixed: true,
       items: [
         {
           icon: 'mdi-apps',
@@ -67,6 +70,15 @@ export default {
       ],
       title: 'Hiring Maps'
     }
+  },
+  created () {
+    this.getCounties()
+  },
+  methods: {
+    ...mapActions({
+      getCounties: 'primary/getCounties'
+    })
   }
+
 }
 </script>

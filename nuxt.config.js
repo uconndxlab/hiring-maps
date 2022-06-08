@@ -22,6 +22,11 @@ export default {
     ],
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
+    ],
+    script: [
+      {
+        src: 'https://www.gstatic.com/charts/loader.js'
+      }
     ]
   },
 
@@ -31,6 +36,7 @@ export default {
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
+    '~/plugins/supabase.js'
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -44,8 +50,7 @@ export default {
     '@nuxtjs/vuetify',
     // Nuxt 2 only:
     // https://composition-api.nuxtjs.org/getting-started/setup#quick-start
-    '@nuxtjs/composition-api/module',
-    '@pinia/nuxt'
+    '@nuxtjs/composition-api/module'
   ],
 
   // Modules: https://go.nuxtjs.dev/config-modules
@@ -74,5 +79,10 @@ export default {
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
+  },
+
+  publicRuntimeConfig: {
+    SUPABASE_URL: process.env.SUPABASE_URL,
+    SUPABASE_KEY: process.env.SUPABASE_KEY
   }
 }
