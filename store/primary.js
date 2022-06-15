@@ -36,24 +36,19 @@ export const mutations = {
   },
   setInitialMapData (state) {
     console.log('settingInitialMapData')
-    const data = [
-      ['id', 'name', 'Value']
-    ]
-    const defaultValue = 0
-    console.log(state.counties)
-    state.counties.forEach((county) => {
-      data.push([county.geocode, county.name, defaultValue])
-    })
-
-    const transformedData = google.visualization.arrayToDataTable(data)
-    state.mapData = transformedData
+    const returnData = new google.visualization.DataTable()
+    returnData.addColumn('string', 'id')
+    returnData.addColumn('string', 'name')
+    returnData.addColumn('number', 'Job Postings')
+    state.mapData = returnData
   },
   setOccupationMonthlyMapData (state) {
     console.log('settingOccupationMonthlyMapData')
-    const data = [
-      ['id', 'name', 'Job Postings']
-    ]
-
+    const returnData = new google.visualization.DataTable()
+    returnData.addColumn('string', 'id')
+    returnData.addColumn('string', 'name')
+    returnData.addColumn('number', 'Job Postings')
+    const data = []
     state.counties.forEach((county) => {
       const countyMonthly = state.occupation.occupation_monthly.filter((x) => {
         return x.county_id === county.id
@@ -81,11 +76,10 @@ export const mutations = {
         county.name,
         countyMonthly.length ? parseInt(countyMonthly[0].job_postings) : 0
       ]
-
       data.push(monthlyCountyDataEntry)
     })
-    const transformedData = google.visualization.arrayToDataTable(data)
-    state.mapData = transformedData
+    returnData.addRows(data)
+    state.mapData = returnData
   },
   setDataHasBeenRetrieved (state, retrievedStatus) {
     state.dataHasBeenRetrieved = retrievedStatus

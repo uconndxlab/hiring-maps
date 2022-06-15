@@ -6,11 +6,25 @@
       </v-col>
     </v-row>
 
-    <v-row justify="center">
-      <v-col cols="12">
-        <occupation-list-item :occupation="occupation" />
-      </v-col>
-    </v-row>
+    <grey-bg>
+      <v-row>
+        <v-col>
+          <h1>{{ occupation.title }}</h1>
+        </v-col>
+      </v-row>
+      <v-row justify="center">
+        <v-col cols="12" md="6">
+          <card-text :title="`Job Description`">
+            {{ occupation.job_description }}
+          </card-text>
+        </v-col>
+        <v-col cols="12" md="6">
+          <card-text :title="`Job Description`">
+            {{ occupation.job_description }}
+          </card-text>
+        </v-col>
+      </v-row>
+    </grey-bg>
   </div>
 </template>
 
