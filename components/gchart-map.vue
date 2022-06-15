@@ -22,7 +22,11 @@ export default {
   data () {
     return {
       chart: null,
-      domElementId: 'map-element'
+      domElementId: 'map-element',
+      chartOptions: {
+        region: 'US-CT',
+        resolution: 'provinces'
+      }
     }
   },
   computed: {
@@ -30,6 +34,14 @@ export default {
       bootstrapped: 'primary/bootstrapped',
       mapData: 'primary/mapData'
     })
+  },
+  watch: {
+    mapData (newData, oldData) {
+      console.log('changingMapData', newData, oldData)
+      if (this.chart) {
+        this.chart.draw(newData, this.chartOptions)
+      }
+    }
   },
   mounted () {
     google.charts.setOnLoadCallback(this.initiateMapDraw)
@@ -49,17 +61,15 @@ export default {
       }
     },
     drawMap () {
+      console.log('Drawing Map')
       google.visualization.GeoChart.setMapsSource('/maps_counties')
-
-      const options = {
-        region: 'US-CT',
-        resolution: 'provinces'
-      }
 
       this.chart = new google.visualization.GeoChart(document.getElementById(this.domElementId))
       google.visualization.events.addListener(this.chart, 'ready', this.chartReady)
       google.visualization.events.addListener(this.chart, 'select', this.chartSelect)
-      this.chart.draw(this.mapData, options)
+      if (this.mapData.version) {
+        this.chart.draw(this.mapData, this.chartOptions)
+      }
     },
     chartReady () {
       console.log('Chart is ready.')

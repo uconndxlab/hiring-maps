@@ -40,7 +40,7 @@ export const mutations = {
       ['id', 'name', 'Value']
     ]
     const defaultValue = 0
-
+    console.log(state.counties)
     state.counties.forEach((county) => {
       data.push([county.geocode, county.name, defaultValue])
     })
@@ -115,7 +115,7 @@ export const actions = {
 
     if (counties && Array.isArray(counties)) {
       commit('setCounties', counties)
-      if (state.mapData === {}) {
+      if (!state.mapData.version) {
         commit('setInitialMapData')
       }
       return true
