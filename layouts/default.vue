@@ -68,11 +68,6 @@ export default {
           icon: 'mdi-format-list-bulleted',
           title: 'Occupations',
           to: '/occupations'
-        },
-        {
-          icon: 'mdi-bookmark-box-multiple',
-          title: 'Component Library',
-          to: '/component-tour'
         }
       ],
       title: 'Hiring Maps'
