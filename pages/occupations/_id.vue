@@ -19,9 +19,8 @@
           </card-text>
         </v-col>
         <v-col cols="12" md="6">
-          <card-text :title="`Job Description`">
-            {{ occupation.job_description }}
-          </card-text>
+          <card-stat-display :title="`Average Annual Salary`" :large="annualSalary" :supporting="annualSalaryHourly" />
+          <card-stat-display :title="`Monthly Job Postings`" :large="monthlyPostings" />
         </v-col>
       </v-row>
     </grey-bg>
@@ -44,8 +43,37 @@ export default {
   computed: {
     ...mapGetters({
       occupation: 'primary/occupation',
-      bootstrapped: 'primary/bootstrapped'
-    })
+      bootstrapped: 'primary/bootstrapped',
+      occupationAnnualSalary: 'primary/occupationAnnualSalary',
+      occupationMonthlyPostings: 'primary/occupationMonthlyPostings'
+    }),
+    annualSalary () {
+      if (!this.occupationAnnualSalary) {
+        return 'No Data'
+      }
+      const formatter = new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD'
+      })
+      return formatter.format(this.occupationAnnualSalary)
+    },
+    annualSalaryHourly () {
+      if (!this.occupationAnnualSalary) {
+        return null
+      }
+      const hourly = this.occupationAnnualSalary / 52 / 40
+      const formatter = new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD'
+      })
+      return `${formatter.format(hourly)}/hourly`
+    },
+    monthlyPostings () {
+      if (!this.occupationMonthlyPostings) {
+        return 'No Data'
+      }
+      return `${this.occupationMonthlyPostings}`
+    }
   },
   mounted () {
     if (!this.bootstrapped) {

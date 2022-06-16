@@ -27,6 +27,44 @@ export const getters = {
   },
   occupation (state) {
     return state.occupation
+  },
+  occupationAnnualSalary (state) {
+    if (Array.isArray(state.occupation?.occupation_annual) && state.occupation?.occupation_annual.length > 0) {
+      const occupationAnnuals = [...state.occupation.occupation_annual].sort(sortForRecentYear)
+      const year = occupationAnnuals[0].year
+      let totalCounted = 0
+      const sum = occupationAnnuals.reduce((acc, occAnn) => {
+        if (occAnn.year === year && occAnn.mean_market_salary) {
+          totalCounted++
+          return acc + occAnn.mean_market_salary
+        }
+        return acc
+      }, 0)
+      if (sum && totalCounted) {
+        return sum / totalCounted
+      }
+    }
+    return 0
+  },
+  occupationMonthlyPostings (state) {
+    if (Array.isArray(state.occupation?.occupation_monthly) && state.occupation?.occupation_monthly.length > 0) {
+      // We are assuming data is sorted (based on our fetch functions) but we can always re-run the sort in a destructured array
+      const year = state.occupation.occupation_monthly[0].year
+      const month = state.occupation.occupation_monthly[0].month
+
+      console.log('Year', year, 'Month', month)
+
+      const monthlies = state.occupation.occupation_monthly.filter((x) => {
+        return x.year === year && x.month === month
+      })
+
+      const sum = monthlies.reduce((acc, occM) => {
+        return acc + occM.job_postings
+      }, 0)
+
+      return sum
+    }
+    return 0
   }
 }
 
@@ -53,23 +91,7 @@ export const mutations = {
       const countyMonthly = state.occupation.occupation_monthly.filter((x) => {
         return x.county_id === county.id
       })
-      countyMonthly.sort((a, b) => {
-        if (a.year > b.year) {
-          return -1
-        }
-
-        if (b.year > a.year) {
-          return 1
-        }
-
-        if (a.month > b.month) {
-          return -1
-        }
-        if (b.month > a.month) {
-          return 1
-        }
-        return 0
-      })
+      countyMonthly.sort(sortForRecentYearAndMonth)
 
       const monthlyCountyDataEntry = [
         county.geocode,
@@ -149,6 +171,8 @@ export const actions = {
     const { data: occupation, error } = await query
 
     if (occupation && Array.isArray(occupation) && occupation.length > 0) {
+      occupation[0].occupation_annual.sort(sortForRecentYear)
+      occupation[0].occupation_monthly.sort(sortForRecentYearAndMonth)
       commit('setOccupation', occupation[0])
       return true
     }
@@ -156,4 +180,34 @@ export const actions = {
     console.log(error)
     return false
   }
+}
+
+const sortForRecentYear = (a, b) => {
+  if (a.year > b.year) {
+    return -1
+  }
+
+  if (a.year < b.year) {
+    return 1
+  }
+
+  return 0
+}
+
+const sortForRecentYearAndMonth = (a, b) => {
+  if (a.year > b.year) {
+    return -1
+  }
+
+  if (b.year > a.year) {
+    return 1
+  }
+
+  if (a.month > b.month) {
+    return -1
+  }
+  if (b.month > a.month) {
+    return 1
+  }
+  return 0
 }
