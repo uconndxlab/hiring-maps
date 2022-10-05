@@ -68,6 +68,11 @@ export default {
           icon: 'mdi-format-list-bulleted',
           title: 'Occupations',
           to: '/occupations'
+        },
+        {
+          icon: 'mdi-format-list-bulleted',
+          title: 'Counties',
+          to: '/counties'
         }
       ],
       title: 'Hiring Maps'
