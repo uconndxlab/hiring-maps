@@ -66,7 +66,7 @@ export default {
 
       this.chart = new google.visualization.GeoChart(document.getElementById(this.domElementId))
       google.visualization.events.addListener(this.chart, 'ready', this.chartReady)
-      google.visualization.events.addListener(this.chart, 'select', this.chartSelect)
+      google.visualization.events.addListener(this.chart, 'regionClick', this.regionClick)
       if (this.mapData.version) {
         this.chart.draw(this.mapData, this.chartOptions)
       }
@@ -74,8 +74,9 @@ export default {
     chartReady () {
       console.log('Chart is ready.')
     },
-    chartSelect (e) {
-      console.log('Chart was selected.', e)
+    regionClick () {
+      console.log('Chart was selected.')
+      console.log(this.chart.regionClick)
     }
   }
 }
