@@ -3,6 +3,7 @@
 export const state = () => ({
   dataHasBeenRetrieved: false,
   counties: [],
+  county: {},
   mapData: {},
   occupationResults: [],
   occupationSearchLoading: false,
@@ -12,6 +13,9 @@ export const state = () => ({
 export const getters = {
   counties (state) {
     return state.counties
+  },
+  county (state) {
+    return state.county
   },
   mapData (state) {
     return state.mapData
@@ -71,6 +75,9 @@ export const getters = {
 export const mutations = {
   setCounties (state, counties) {
     state.counties = counties
+  },
+  setCounty (state, county) {
+    state.county = county
   },
   setInitialMapData (state) {
     console.log('settingInitialMapData')
@@ -134,6 +141,20 @@ export const actions = {
       if (!state.mapData.version) {
         commit('setInitialMapData')
       }
+      return true
+    }
+
+    console.log(error)
+    return false
+  },
+  async getCounty ({ commit }, id) {
+    const query = this.$supabase().from('counties')
+      .select('id, name, state_code, geocode')
+      .eq('id', id)
+    const { data: county, error } = await query
+
+    if (county && Array.isArray(county) && county.length > 0) {
+      commit('setCounty', county)
       return true
     }
 
