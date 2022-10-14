@@ -148,16 +148,17 @@ export const actions = {
     return false
   },
   async getCounty ({ commit }, id) {
+    console.log(id)
     const query = this.$supabase().from('counties')
       .select('id, name, state_code, geocode')
       .eq('id', id)
     const { data: county, error } = await query
+    console.log({ data: county, error })
 
     if (county && Array.isArray(county) && county.length > 0) {
-      commit('setCounty', county)
+      commit('setCounty', county[0])
       return true
     }
-
     console.log(error)
     return false
   },

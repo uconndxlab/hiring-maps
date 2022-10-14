@@ -24,12 +24,11 @@
 <script>
 
 import { mapGetters } from 'vuex'
+/* global google */
 
 export default {
   async asyncData ({ params, store }) {
-    const county = store.getters['primary/county']
-    console.log(county.name)
-
+    const county = store.getters['primary/counties']
     if (!county || !county.id || county.id !== params.id) {
       await store.dispatch('primary/getCounty', params.id)
     }
@@ -39,6 +38,9 @@ export default {
       county: 'primary/county',
       bootstrapped: 'primary/bootstrapped'
     })
+  },
+  mounted () {
+    google.charts.setOnLoadCallback(this.initiateMapDraw)
   }
 }
 
