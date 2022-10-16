@@ -1,7 +1,7 @@
 <template>
   <div class="counties-list">
     <div v-if="counties.length" class="counties-list-container">
-      <CountiesListItem v-for="county in counties" :key="county.name" :county="county" />
+      <CountiesListItem v-for="county in counties" :key="county.name" :county="county" :county-monthly-postings="countyMonthlyPostings" />
     </div>
   </div>
 </template>
@@ -12,7 +12,9 @@ import { mapGetters } from 'vuex'
 export default {
   computed: {
     ...mapGetters({
-      counties: 'primary/counties'
+      counties: 'primary/counties',
+      county: 'primary/county',
+      countyMonthlyPostings: 'primary/countyMonthlyPostings'
     })
   }
 }

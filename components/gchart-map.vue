@@ -80,8 +80,12 @@ export default {
 
       for (let i = 0; i < selected.length; i++) {
         const item = selected[i]
-        console.log(item.row)
+        const countyId = item.row + 1
+        this.$nuxt.$options.router.push('/counties/' + countyId)
       }
+    },
+    clearMapData () {
+      this.chart.clearChart()
     }
   }
 }

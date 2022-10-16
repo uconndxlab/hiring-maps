@@ -14,7 +14,11 @@
       </v-row>
       <v-row justify="center">
         <v-col cols="12" md="6">
-          <CardText :title="`County Description`" />
+          <CardStatDisplay :title="`Total Monthly Job Postings`" :large="monthlyCountyJobPostings" />
+          <CardStatDisplay :title="`Total Annual Job Postings`" :large="`{annualCountyJobPostings}`" />
+        </v-col>
+        <v-col cols="12" md="6">
+          <CardStatDisplay :title="`Industry with Most Demand:`" :large="`{industryDemandName}`" :supporting="`{industryDemandJobs}`" />
         </v-col>
       </v-row>
     </grey-bg>
@@ -23,7 +27,7 @@
 
 <script>
 
-import { mapGetters } from 'vuex'
+import { mapGetters, mapMutations } from 'vuex'
 /* global google */
 
 export default {
@@ -36,11 +40,33 @@ export default {
   computed: {
     ...mapGetters({
       county: 'primary/county',
-      bootstrapped: 'primary/bootstrapped'
-    })
+      bootstrapped: 'primary/bootstrapped',
+      countyMonthlyPostings: 'primary/countyMonthlyPostings'
+    }),
+    monthlyCountyJobPostings () {
+      if (!this.countyMonthlyPostings) {
+        return 'No Data'
+      }
+      return this.countyMonthlyPostings.toString()
+    }
   },
   mounted () {
-    google.charts.setOnLoadCallback(this.initiateMapDraw)
+    if (!this.bootstrapped) {
+      const unsubscribe = this.$store.subscribe((mutation) => {
+        if (mutation.type === 'primary/setDataHasBeenRetrieved') {
+          console.log('Data has been retrieved')
+          google.charts.setOnLoadCallback(this.setCountyMonthlyMapData)
+          unsubscribe()
+        }
+      })
+    } else {
+      google.charts.setOnLoadCallback(this.setCountyMonthlyMapData)
+    }
+  },
+  methods: {
+    ...mapMutations({
+      setCountyMonthlyMapData: 'primary/setCountyMonthlyMapData'
+    })
   }
 }
 

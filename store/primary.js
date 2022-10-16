@@ -69,6 +69,17 @@ export const getters = {
       return sum
     }
     return 0
+  },
+  countyMonthlyPostings (state) {
+    if (Array.isArray(state.county?.occupation_monthly) && state.county?.occupation_monthly.length > 0) {
+      let totalJobPostings = 0
+      for (let i = 0; i < state.county.occupation_monthly.length; i++) {
+        totalJobPostings += state.county.occupation_monthly[i].job_postings
+      }
+
+      return totalJobPostings
+    }
+    return 0
   }
 }
 
@@ -104,6 +115,31 @@ export const mutations = {
         county.geocode,
         county.name,
         countyMonthly.length ? parseInt(countyMonthly[0].job_postings) : 0
+      ]
+      data.push(monthlyCountyDataEntry)
+    })
+    returnData.addRows(data)
+    state.mapData = returnData
+  },
+  // TODO: Retrieve Monthly map data based upon county rather than occupation
+  setCountyMonthlyMapData (state) {
+    console.log('settingCountyMonthlyMapData')
+    const returnData = new google.visualization.DataTable()
+    returnData.addColumn('string', 'id')
+    returnData.addColumn('string', 'name')
+    returnData.addColumn('number', 'Job Postings')
+    const data = []
+    let totalJobPostings = 0
+    state.counties.forEach((county) => {
+      const countyMonthly = state.county.occupation_monthly
+      countyMonthly.sort(sortForRecentYearAndMonth)
+      for (let i = 0; i < countyMonthly.length; i++) {
+        totalJobPostings += countyMonthly[i].job_postings
+      }
+      const monthlyCountyDataEntry = [
+        county.geocode,
+        county.name,
+        totalJobPostings
       ]
       data.push(monthlyCountyDataEntry)
     })
@@ -148,14 +184,16 @@ export const actions = {
     return false
   },
   async getCounty ({ commit }, id) {
-    console.log(id)
     const query = this.$supabase().from('counties')
-      .select('id, name, state_code, geocode')
+      .select('id, name, state_code, geocode, occupation_annual (*), occupation_monthly (*)')
       .eq('id', id)
+      .eq('occupation_annual.county_id', id)
+      .eq('occupation_monthly.county_id', id)
     const { data: county, error } = await query
-    console.log({ data: county, error })
 
     if (county && Array.isArray(county) && county.length > 0) {
+      county[0].occupation_annual.sort(sortForRecentYear)
+      county[0].occupation_monthly.sort(sortForRecentYearAndMonth)
       commit('setCounty', county[0])
       return true
     }
