@@ -6,7 +6,8 @@ export const state = () => ({
   mapData: {},
   occupationResults: [],
   occupationSearchLoading: false,
-  occupation: {}
+  occupation: {},
+  topTenJobs: []
 })
 
 export const getters = {
@@ -65,6 +66,9 @@ export const getters = {
       return sum
     }
     return 0
+  },
+  topTenJobPostings (state) {
+    return state.topTenJobs
   }
 }
 
@@ -114,6 +118,9 @@ export const mutations = {
   },
   setOccupation (state, occupation) {
     state.occupation = occupation
+  },
+  setTopTenJobs (state, occupations) {
+    state.topTenJobs = occupations
   }
 }
 
@@ -121,6 +128,7 @@ export const actions = {
   async bootstrap ({ dispatch, commit }) {
     await dispatch('getCounties')
     await dispatch('fetchOccupations')
+    await dispatch('fetchTopTenJobs')
     console.log('bootstrapped')
     commit('setDataHasBeenRetrieved', true)
   },
@@ -179,8 +187,32 @@ export const actions = {
 
     console.log(error)
     return false
+  },
+  async fetchTopTenJobs ({ commit }) {
+    const query = this.$supabase()
+      .from('occupation_monthly')
+      .select('id, job_postings')
+    const { data: occupationMonthly, error } = await query
+    if (error) {
+      console.log(error)
+      return false
+    }
+    occupationMonthly.sort(sortForJobListings)
+    const topTenJobIds = []
+    for (let i = 0; i < 10; i++) {
+      topTenJobIds.push(occupationMonthly[i].id)
+    }
+    const { data: occupations } = await this.$supabase() // cannot handle error for second api call
+      .from('occupations')
+      .select('*')
+      .in('id', topTenJobIds)
+    commit('setTopTenJobs', occupations)
   }
 }
+
+const sortForJobListings = (a, b) => (
+  (a.job_postings < b.job_postings) ? 1 : -1
+)
 
 const sortForRecentYear = (a, b) => {
   if (a.year > b.year) {
