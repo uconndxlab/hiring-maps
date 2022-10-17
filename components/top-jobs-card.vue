@@ -2,8 +2,8 @@
   <v-card>
     <div>
       <ul>
-        <li>
-          test
+        <li v-for="job in topTenJobs" :key="`job-${job.id}`">
+          {{ job.title }}
         </li>
       </ul>
     </div>
@@ -11,17 +11,13 @@
 </template>
 
 <script>
-import { useStore } from 'vuex'
-import { computed } from 'vue'
+import { mapGetters } from 'vuex'
 
 export default {
-  setup () {
-    const store = useStore()
-
-    return {
-      topTenJobs: computed(() => store.getters.topTenJobPostings)
-    }
+  computed: {
+    ...mapGetters({
+      topTenJobs: 'primary/topTenJobPostings'
+    })
   }
 }
-
 </script>
