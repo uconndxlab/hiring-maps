@@ -274,10 +274,6 @@ const sortForJobListings = (a, b) => (
   (a.job_postings < b.job_postings) ? 1 : -1
 )
 
-const sortForJobListings = (a, b) => (
-  (a.job_postings < b.job_postings) ? 1 : -1
-)
-
 const sortForRecentYear = (a, b) => {
   if (a.year > b.year) {
     return -1
