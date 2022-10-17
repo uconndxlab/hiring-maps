@@ -2,6 +2,7 @@
   <v-row justify="center">
     <v-col cols="12">
       <gchart-map />
+      <TopJobsCard />
     </v-col>
 
     <v-col cols="12" sm="6">
@@ -30,8 +31,10 @@
 </template>
 
 <script>
+import TopJobsCard from '~/components/top-jobs-card.vue'
 /* eslint vue/multi-word-component-names:0 */
 export default {
+  components: { TopJobsCard },
   data () {
     return {
       graphLabels: ['Technology', 'Finance', 'Manufacturing', 'Retail'],
