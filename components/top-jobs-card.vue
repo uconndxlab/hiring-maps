@@ -1,5 +1,5 @@
 <template>
-  <v-card>
+  <card-text :title="`Top Job Postings for ${month}`">
     <div>
       <ul>
         <li v-for="job in topTenJobs" :key="`job-${job.id}`">
@@ -7,17 +7,27 @@
         </li>
       </ul>
     </div>
-  </v-card>
+  </card-text>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
 
 export default {
+  data () {
+    return {
+      month: ''
+    }
+  },
   computed: {
     ...mapGetters({
       topTenJobs: 'primary/topTenJobPostings'
     })
+  },
+  mounted () {
+    const current = new Date()
+    const currentMonth = current.toLocaleString('default', { month: 'long' })
+    this.month = currentMonth
   }
 }
 </script>
