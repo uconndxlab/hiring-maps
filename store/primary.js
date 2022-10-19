@@ -160,22 +160,10 @@ export const mutations = {
     returnData.addColumn('string', 'id')
     returnData.addColumn('string', 'name')
     returnData.addColumn('number', 'Job Postings')
-    const data = []
-    let totalJobPostings = 0
     state.counties.forEach((county) => {
-      const countyMonthly = state.county.occupation_monthly
-      for (let i = 0; i < countyMonthly.length; i++) {
-        totalJobPostings += countyMonthly[i].job_postings
-      }
-      const monthlyCountyDataEntry = [
-        county.geocode,
-        county.name,
-        countyMonthly.length ? parseInt(totalJobPostings) : 0
-      ]
-      data.push(monthlyCountyDataEntry)
+      console.log(state.county.name)
+      console.log(county.name)
     })
-    returnData.addRows(data)
-    state.mapData = returnData
   },
   setDataHasBeenRetrieved (state, retrievedStatus) {
     state.dataHasBeenRetrieved = retrievedStatus
@@ -197,18 +185,36 @@ export const mutations = {
 export const actions = {
   async bootstrap ({ dispatch, commit }) {
     await dispatch('getCounties')
-    await dispatch('getCounty')
     await dispatch('fetchOccupations')
     await dispatch('fetchTopTenJobs')
     console.log('bootstrapped')
     commit('setDataHasBeenRetrieved', true)
   },
+  // TODO: TEST FOLLOWING LOGIC -> For each county in counties, nest the getCounty request and assign the return data to the county based on county id
   async getCounties ({ commit, state }) {
     const { data: counties, error } = await this.$supabase().from('counties')
       .select('*')
       .eq('state_code', 'CT')
 
     if (counties && Array.isArray(counties)) {
+      counties.forEach((xcounty) => {
+        console.log('querying for each county ', xcounty.id)
+        // Seems like the syntax for nesting queries like this is incorrect, because I see no fetch requests for the following queries
+        const { data: county, error } = this.$supabase().from('counties')
+          .select('id, name, state_code, geocode, occupation_annual (*), occupation_monthly (*)')
+          .eq('id', xcounty.id)
+          .eq('occupation_annual.county_id', xcounty.id)
+          .eq('occupation_monthly.county_id', xcounty.id)
+        if (county && Array.isArray(county) && county.length > 0) {
+          county[0].occupation_annual.sort(sortForRecentYear)
+          county[0].occupation_monthly.sort(sortForRecentYearAndMonth)
+          commit('setCounty', county[0])
+          xcounty = county[0]
+          console.log(xcounty)
+        } else {
+          console.log(error)
+        }
+      })
       commit('setCounties', counties)
       if (!state.mapData.version) {
         commit('setInitialMapData')

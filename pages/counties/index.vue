@@ -20,15 +20,9 @@ import { mapMutations, mapGetters } from 'vuex'
 // TODO: Call primary function to draw geochart with total job posting data per county, then pass this chart to each county/id page
 export default {
   name: 'CountyPage',
-  async asyncData ({ params, store }) {
-    const county = store.getters['primary/county']
-    if (!county || !county.id || county.id !== params.id) {
-      await store.dispatch('primary/getCounty', params.id)
-    }
-  },
   computed: {
     ...mapGetters({
-      county: 'primary/county',
+      counties: 'primary/counties',
       bootstrapped: 'primary/bootstrapped'
     })
   },
