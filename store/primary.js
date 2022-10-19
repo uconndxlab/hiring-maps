@@ -74,13 +74,41 @@ export const getters = {
   topTenJobPostings (state) {
     return state.topTenJobs
   },
+  // TODO: Fix this function to return data for most recent month not every month
   countyMonthlyPostings (state) {
+    console.log('Getting county job postings for this month!')
     if (Array.isArray(state.county?.occupation_monthly) && state.county?.occupation_monthly.length > 0) {
       let totalJobPostings = 0
       for (let i = 0; i < state.county.occupation_monthly.length; i++) {
         totalJobPostings += state.county.occupation_monthly[i].job_postings
       }
 
+      return totalJobPostings
+    }
+    return 0
+  },
+  countyJobPostings2020 (state) {
+    console.log('Getting job postings for this county in 2020!')
+    if (Array.isArray(state.county.occupation_monthly) && state.county?.occupation_monthly.length > 0) {
+      let totalJobPostings = 0
+      for (let i = 0; i < state.county.occupation_monthly.length; i++) {
+        if (state.county.occupation_monthly[i].year === 2020) {
+          totalJobPostings += state.county.occupation_monthly[i].job_postings
+        }
+      }
+      return totalJobPostings
+    }
+    return 0
+  },
+  countyJobPostings2021 (state) {
+    console.log('Getting job postings for this county in 2021!')
+    if (Array.isArray(state.county.occupation_monthly) && state.county?.occupation_monthly.length > 0) {
+      let totalJobPostings = 0
+      for (let i = 0; i < state.county.occupation_monthly.length; i++) {
+        if (state.county.occupation_monthly[i].year === 2021) {
+          totalJobPostings += state.county.occupation_monthly[i].job_postings
+        }
+      }
       return totalJobPostings
     }
     return 0
@@ -125,9 +153,9 @@ export const mutations = {
     returnData.addRows(data)
     state.mapData = returnData
   },
-  // TODO: Retrieve Monthly map data based upon county rather than occupation
-  setCountyMonthlyMapData (state) {
-    console.log('settingCountyMonthlyMapData')
+  // TODO: Fix function to accurately add total job posting data to geochart
+  setTotalCountyMapData (state) {
+    console.log('settingTotalCountyMapData')
     const returnData = new google.visualization.DataTable()
     returnData.addColumn('string', 'id')
     returnData.addColumn('string', 'name')
@@ -136,14 +164,13 @@ export const mutations = {
     let totalJobPostings = 0
     state.counties.forEach((county) => {
       const countyMonthly = state.county.occupation_monthly
-      countyMonthly.sort(sortForRecentYearAndMonth)
       for (let i = 0; i < countyMonthly.length; i++) {
         totalJobPostings += countyMonthly[i].job_postings
       }
       const monthlyCountyDataEntry = [
         county.geocode,
         county.name,
-        totalJobPostings
+        countyMonthly.length ? parseInt(totalJobPostings) : 0
       ]
       data.push(monthlyCountyDataEntry)
     })
@@ -170,6 +197,7 @@ export const mutations = {
 export const actions = {
   async bootstrap ({ dispatch, commit }) {
     await dispatch('getCounties')
+    await dispatch('getCounty')
     await dispatch('fetchOccupations')
     await dispatch('fetchTopTenJobs')
     console.log('bootstrapped')

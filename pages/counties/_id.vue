@@ -2,7 +2,7 @@
   <div class="single-county-page">
     <v-row justify="center">
       <v-col cols="12">
-        <GchartMap :wait-hook="`primary/setOccupationMonthlyMapData`" />
+        <GchartMap />
       </v-col>
     </v-row>
 
@@ -14,8 +14,8 @@
       </v-row>
       <v-row justify="center">
         <v-col cols="12" md="6">
-          <CardStatDisplay :title="`Total Monthly Job Postings`" :large="monthlyCountyJobPostings" />
-          <CardStatDisplay :title="`Total Annual Job Postings`" :large="`{annualCountyJobPostings}`" />
+          <CardStatDisplay :title="`Total Job Postings 2020`" :large="jobPosting2020" />
+          <CardStatDisplay :title="`Total Job Postings in 2021`" :large="jobPosting2021" />
         </v-col>
         <v-col cols="12" md="6">
           <CardStatDisplay :title="`Industry with Most Demand:`" :large="`{industryDemandName}`" :supporting="`{industryDemandJobs}`" />
@@ -27,12 +27,11 @@
 
 <script>
 
-import { mapGetters, mapMutations } from 'vuex'
-/* global google */
+import { mapGetters } from 'vuex'
 
 export default {
   async asyncData ({ params, store }) {
-    const county = store.getters['primary/counties']
+    const county = store.getters['primary/county']
     if (!county || !county.id || county.id !== params.id) {
       await store.dispatch('primary/getCounty', params.id)
     }
@@ -41,32 +40,28 @@ export default {
     ...mapGetters({
       county: 'primary/county',
       bootstrapped: 'primary/bootstrapped',
-      countyMonthlyPostings: 'primary/countyMonthlyPostings'
+      countyMonthlyPostings: 'primary/countyMonthlyPostings',
+      countyJobPostings2020: 'primary/countyJobPostings2020',
+      countyJobPostings2021: 'primary/countyJobPostings2021'
     }),
-    monthlyCountyJobPostings () {
+    recentMonthCountyJobPostings () {
       if (!this.countyMonthlyPostings) {
         return 'No Data'
       }
       return this.countyMonthlyPostings.toString()
+    },
+    jobPosting2020 () {
+      if (!this.countyJobPostings2020) {
+        return 'No Data'
+      }
+      return this.countyJobPostings2020.toString()
+    },
+    jobPosting2021 () {
+      if (!this.countyJobPostings2021) {
+        return 'No Data'
+      }
+      return this.countyJobPostings2021.toString()
     }
-  },
-  mounted () {
-    if (!this.bootstrapped) {
-      const unsubscribe = this.$store.subscribe((mutation) => {
-        if (mutation.type === 'primary/setDataHasBeenRetrieved') {
-          console.log('Data has been retrieved')
-          google.charts.setOnLoadCallback(this.setCountyMonthlyMapData)
-          unsubscribe()
-        }
-      })
-    } else {
-      google.charts.setOnLoadCallback(this.setCountyMonthlyMapData)
-    }
-  },
-  methods: {
-    ...mapMutations({
-      setCountyMonthlyMapData: 'primary/setCountyMonthlyMapData'
-    })
   }
 }
 
