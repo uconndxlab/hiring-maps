@@ -30,8 +30,13 @@ export const getters = {
     return state.occupation
   },
   occupationAnnualSalary (state) {
-    if (Array.isArray(state.occupation?.occupation_annual) && state.occupation?.occupation_annual.length > 0) {
-      const occupationAnnuals = [...state.occupation.occupation_annual].sort(sortForRecentYear)
+    if (
+      Array.isArray(state.occupation?.occupation_annual) &&
+      state.occupation?.occupation_annual.length > 0
+    ) {
+      const occupationAnnuals = [...state.occupation.occupation_annual].sort(
+        sortForRecentYear
+      )
       const year = occupationAnnuals[0].year
       let totalCounted = 0
       const sum = occupationAnnuals.reduce((acc, occAnn) => {
@@ -48,7 +53,10 @@ export const getters = {
     return 0
   },
   occupationMonthlyPostings (state) {
-    if (Array.isArray(state.occupation?.occupation_monthly) && state.occupation?.occupation_monthly.length > 0) {
+    if (
+      Array.isArray(state.occupation?.occupation_monthly) &&
+      state.occupation?.occupation_monthly.length > 0
+    ) {
       // We are assuming data is sorted (based on our fetch functions) but we can always re-run the sort in a destructured array
       const year = state.occupation.occupation_monthly[0].year
       const month = state.occupation.occupation_monthly[0].month
@@ -133,7 +141,8 @@ export const actions = {
     commit('setDataHasBeenRetrieved', true)
   },
   async getCounties ({ commit, state }) {
-    const { data: counties, error } = await this.$supabase().from('counties')
+    const { data: counties, error } = await this.$supabase()
+      .from('counties')
       .select('*')
       .eq('state_code', 'CT')
 
@@ -152,7 +161,8 @@ export const actions = {
     const limit = searchOptions?.limit ? searchOptions.limit : 20
     const start = searchOptions?.start ? searchOptions.start : 0
 
-    let query = this.$supabase().from('occupations')
+    let query = this.$supabase()
+      .from('occupations')
       .select('id, code, title, job_description, type')
 
     if (searchOptions?.query) {
@@ -172,8 +182,11 @@ export const actions = {
     return false
   },
   async fetchOccupation ({ commit }, id) {
-    const query = this.$supabase().from('occupations')
-      .select('id, code, title, job_description, type, occupation_annual (*), occupation_monthly (*)')
+    const query = this.$supabase()
+      .from('occupations')
+      .select(
+        'id, code, title, job_description, type, occupation_annual (*), occupation_monthly (*)'
+      )
       .eq('id', id)
 
     const { data: occupation, error } = await query
@@ -207,12 +220,16 @@ export const actions = {
       .select('*')
       .in('id', topTenJobIds)
     commit('setTopTenJobs', occupations)
+    /* TODO: change so that state is passed as
+    {
+      job: ....
+      postings: ...
+    }
+    */
   }
 }
 
-const sortForJobListings = (a, b) => (
-  (a.job_postings < b.job_postings) ? 1 : -1
-)
+const sortForJobListings = (a, b) => (a.job_postings < b.job_postings ? 1 : -1)
 
 const sortForRecentYear = (a, b) => {
   if (a.year > b.year) {
