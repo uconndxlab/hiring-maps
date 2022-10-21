@@ -2,6 +2,8 @@
   <v-row justify="center">
     <v-col cols="12">
       <gchart-map />
+    </v-col>
+    <v-col cols="12">
       <TopJobsCard />
     </v-col>
 

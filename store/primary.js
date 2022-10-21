@@ -34,8 +34,13 @@ export const getters = {
     return state.occupation
   },
   occupationAnnualSalary (state) {
-    if (Array.isArray(state.occupation?.occupation_annual) && state.occupation?.occupation_annual.length > 0) {
-      const occupationAnnuals = [...state.occupation.occupation_annual].sort(sortForRecentYear)
+    if (
+      Array.isArray(state.occupation?.occupation_annual) &&
+      state.occupation?.occupation_annual.length > 0
+    ) {
+      const occupationAnnuals = [...state.occupation.occupation_annual].sort(
+        sortForRecentYear
+      )
       const year = occupationAnnuals[0].year
       let totalCounted = 0
       const sum = occupationAnnuals.reduce((acc, occAnn) => {
@@ -52,7 +57,10 @@ export const getters = {
     return 0
   },
   occupationMonthlyPostings (state) {
-    if (Array.isArray(state.occupation?.occupation_monthly) && state.occupation?.occupation_monthly.length > 0) {
+    if (
+      Array.isArray(state.occupation?.occupation_monthly) &&
+      state.occupation?.occupation_monthly.length > 0
+    ) {
       // We are assuming data is sorted (based on our fetch functions) but we can always re-run the sort in a destructured array
       const year = state.occupation.occupation_monthly[0].year
       const month = state.occupation.occupation_monthly[0].month
@@ -192,7 +200,8 @@ export const actions = {
   },
   // TODO: TEST FOLLOWING LOGIC -> For each county in counties, nest the getCounty request and assign the return data to the county based on county id
   async getCounties ({ commit, state }) {
-    const { data: counties, error } = await this.$supabase().from('counties')
+    const { data: counties, error } = await this.$supabase()
+      .from('counties')
       .select('*')
       .eq('state_code', 'CT')
 
@@ -246,7 +255,8 @@ export const actions = {
     const limit = searchOptions?.limit ? searchOptions.limit : 20
     const start = searchOptions?.start ? searchOptions.start : 0
 
-    let query = this.$supabase().from('occupations')
+    let query = this.$supabase()
+      .from('occupations')
       .select('id, code, title, job_description, type')
 
     if (searchOptions?.query) {
@@ -266,8 +276,11 @@ export const actions = {
     return false
   },
   async fetchOccupation ({ commit }, id) {
-    const query = this.$supabase().from('occupations')
-      .select('id, code, title, job_description, type, occupation_annual (*), occupation_monthly (*)')
+    const query = this.$supabase()
+      .from('occupations')
+      .select(
+        'id, code, title, job_description, type, occupation_annual (*), occupation_monthly (*)'
+      )
       .eq('id', id)
 
     const { data: occupation, error } = await query
@@ -283,30 +296,58 @@ export const actions = {
     return false
   },
   async fetchTopTenJobs ({ commit }) {
-    const query = this.$supabase()
+    const jobs = {}
+    const jobQuery = this.$supabase()
       .from('occupation_monthly')
-      .select('id, job_postings')
-    const { data: occupationMonthly, error } = await query
+      .select('occupation_id, job_postings')
+    const { data: allJobs, error } = await jobQuery
     if (error) {
       console.log(error)
       return false
     }
-    occupationMonthly.sort(sortForJobListings)
-    const topTenJobIds = []
-    for (let i = 0; i < 10; i++) {
-      topTenJobIds.push(occupationMonthly[i].id)
+    allJobs.forEach((job) => {
+      const jobId = job.occupation_id
+      if (jobId in jobs) {
+        jobs[jobId] += job.job_postings
+      } else {
+        jobs[jobId] = job.job_postings
+      }
+    })
+    const jobArr = []
+    for (const [key, val] of Object.entries(jobs)) {
+      jobArr.push([key, val])
     }
-    const { data: occupations } = await this.$supabase() // cannot handle error for second api call
+    jobArr.sort(sortForJobListingsArray)
+    const topTenJobs = []
+    const topTenIds = []
+    for (let i = 0; i < 10; i++) {
+      topTenJobs.push([jobArr[i][0], jobArr[i][1]]) //  [....[id, postings],...]
+      topTenIds.push([jobArr[i][0]])
+    }
+    const { data: occupations, error: occupationError } = await this.$supabase()
       .from('occupations')
       .select('*')
-      .in('id', topTenJobIds)
+      .in('id', topTenIds)
+    if (occupationError) {
+      console.log(occupationError)
+      return false
+    }
+    occupations.forEach((job) => { //  add job posting data to each occupation
+      const jobId = job.id
+      topTenJobs.forEach((j) => {
+        if (parseInt(j[0]) === jobId) {
+          job.job_postings = j[1]
+        }
+      })
+    })
+    occupations.sort(sortForJobListingsObject)
     commit('setTopTenJobs', occupations)
   }
 }
 
-const sortForJobListings = (a, b) => (
-  (a.job_postings < b.job_postings) ? 1 : -1
-)
+const sortForJobListingsArray = (a, b) => (a[1] < b[1] ? 1 : -1)
+
+const sortForJobListingsObject = (a, b) => (a.job_postings < b.job_postings ? 1 : -1)
 
 const sortForRecentYear = (a, b) => {
   if (a.year > b.year) {
