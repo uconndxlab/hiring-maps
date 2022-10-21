@@ -3,7 +3,7 @@
     <div>
       <ul>
         <li v-for="job in topTenJobs" :key="`job-${job.id}`">
-          {{ job.title }}
+          {{ job.title }} ({{ job.job_postings }})
         </li>
       </ul>
     </div>
