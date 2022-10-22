@@ -180,6 +180,7 @@ export const actions = {
     await dispatch('getCounties')
     await dispatch('fetchOccupations')
     await dispatch('fetchTopTenJobs')
+    await dispatch('fetchTopJobsByCounty')
     console.log('bootstrapped')
     commit('setDataHasBeenRetrieved', true)
   },
@@ -190,6 +191,19 @@ export const actions = {
       .eq('state_code', 'CT')
 
     if (counties && Array.isArray(counties)) {
+      counties.forEach((county) => { county.job_postings = 0 })
+      const { data: occupations, error: occupationError } = await this.$supabase()
+        .from('occupation_monthly')
+        .select('year, county_id, job_postings')
+        .eq('year', '2021')
+      if (occupationError) {
+        console.log(occupationError)
+        return false
+      }
+      occupations.forEach((job) => {
+        counties[job.county_id - 1].job_postings += job.job_postings
+      })
+
       commit('setCounties', counties)
       if (!state.mapData.version) {
         commit('setInitialMapData')
@@ -265,7 +279,8 @@ export const actions = {
     const jobs = {}
     const jobQuery = this.$supabase()
       .from('occupation_monthly')
-      .select('occupation_id, job_postings')
+      .select('occupation_id, job_postings, year')
+      .eq('year', '2021')
     const { data: allJobs, error } = await jobQuery
     if (error) {
       console.log(error)

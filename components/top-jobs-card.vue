@@ -1,5 +1,5 @@
 <template>
-  <card-text :title="`Top Job Postings for ${month}`">
+  <card-text :title="`Top Job Postings for 2021`">
     <div>
       <ul>
         <li v-for="job in topTenJobs" :key="`job-${job.id}`">
