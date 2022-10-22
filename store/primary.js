@@ -233,6 +233,36 @@ export const actions = {
     }
     return true
   },
+  async getCounties2021 ({ commit, state }) {
+    const { data: counties, error } = await this.$supabase()
+      .from('counties')
+      .select('*')
+      .eq('state_code', 'CT')
+
+    if (counties && Array.isArray(counties)) {
+      counties.forEach((county) => { county.job_postings = 0 })
+      const { data: occupations, error: occupationError } = await this.$supabase()
+        .from('occupation_monthly')
+        .select('year, county_id, job_postings')
+        .eq('year', '2021')
+      if (occupationError) {
+        console.log(occupationError)
+        return false
+      }
+      occupations.forEach((job) => {
+        counties[job.county_id - 1].job_postings += job.job_postings
+      })
+
+      commit('setCounties', counties)
+      if (!state.mapData.version) {
+        commit('setInitialMapData')
+      }
+      return true
+    }
+
+    console.log(error)
+    return false
+  },
   async getCounty ({ commit }, id) {
     const query = this.$supabase().from('counties')
       .select('id, name, state_code, geocode, occupation_annual (*), occupation_monthly (*)')
