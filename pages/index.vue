@@ -3,8 +3,11 @@
     <v-col cols="12">
       <gchart-map />
     </v-col>
-    <v-col cols="12">
+    <v-col cols="6">
       <TopJobsCard />
+    </v-col>
+    <v-col cols="6">
+      <JobsByCountyCard />
     </v-col>
 
     <v-col cols="12" sm="6">
@@ -34,9 +37,10 @@
 
 <script>
 import TopJobsCard from '~/components/top-jobs-card.vue'
+import JobsByCountyCard from '~/components/jobs-by-county-card.vue'
 /* eslint vue/multi-word-component-names:0 */
 export default {
-  components: { TopJobsCard },
+  components: { TopJobsCard, JobsByCountyCard },
   data () {
     return {
       graphLabels: ['Technology', 'Finance', 'Manufacturing', 'Retail'],
