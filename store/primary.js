@@ -84,7 +84,6 @@ export const getters = {
   },
   // TODO: Fix this function to return data for most recent month not every month
   countyMonthlyPostings (state) {
-    console.log('Getting county job postings for this month!')
     if (Array.isArray(state.county?.occupation_monthly) && state.county?.occupation_monthly.length > 0) {
       let totalJobPostings = 0
       for (let i = 0; i < state.county.occupation_monthly.length; i++) {
@@ -96,7 +95,6 @@ export const getters = {
     return 0
   },
   countyJobPostings2020 (state) {
-    console.log('Getting job postings for this county in 2020!')
     if (Array.isArray(state.county.occupation_monthly) && state.county?.occupation_monthly.length > 0) {
       let totalJobPostings = 0
       for (let i = 0; i < state.county.occupation_monthly.length; i++) {
@@ -109,7 +107,6 @@ export const getters = {
     return 0
   },
   countyJobPostings2021 (state) {
-    console.log('Getting job postings for this county in 2021!')
     if (Array.isArray(state.county.occupation_monthly) && state.county?.occupation_monthly.length > 0) {
       let totalJobPostings = 0
       for (let i = 0; i < state.county.occupation_monthly.length; i++) {
@@ -161,17 +158,32 @@ export const mutations = {
     returnData.addRows(data)
     state.mapData = returnData
   },
-  // TODO: Fix function to accurately add total job posting data to geochart
+
+  // TODO: Create a function similar to the one below except only data for most recent month.
   setTotalCountyMapData (state) {
     console.log('settingTotalCountyMapData')
     const returnData = new google.visualization.DataTable()
     returnData.addColumn('string', 'id')
     returnData.addColumn('string', 'name')
     returnData.addColumn('number', 'Job Postings')
-    state.counties.forEach((county) => {
-      console.log(state.county.name)
-      console.log(county.name)
-    })
+    const data = []
+    for (let i = 0; i < state.counties.length; i++) { // Iterate through each county: i
+      let countyJobPostings = 0
+      const countyMonthly = state.counties[i].occupation_monthly
+      for (let j = 0; j < countyMonthly.length; j++) { // Iterate through each index of occupation monthly: j
+        if (countyMonthly[j].county_id === state.counties[i].id) {
+          countyJobPostings += countyMonthly[j].job_postings
+        }
+      }
+      const totalCountyPostingDataEntry = [
+        state.counties[i].geocode,
+        state.counties[i].name,
+        parseInt(countyJobPostings)
+      ]
+      data.push(totalCountyPostingDataEntry)
+    }
+    returnData.addRows(data)
+    state.mapData = returnData
   },
   setDataHasBeenRetrieved (state, retrievedStatus) {
     state.dataHasBeenRetrieved = retrievedStatus
@@ -198,41 +210,27 @@ export const actions = {
     console.log('bootstrapped')
     commit('setDataHasBeenRetrieved', true)
   },
-  // TODO: TEST FOLLOWING LOGIC -> For each county in counties, nest the getCounty request and assign the return data to the county based on county id
   async getCounties ({ commit, state }) {
-    const { data: counties, error } = await this.$supabase()
+    const { data: counties, error: countyError } = await this.$supabase()
       .from('counties')
-      .select('*')
+      .select('id, name, state_code, geocode, occupation_annual (*), occupation_monthly (*)')
       .eq('state_code', 'CT')
 
-    if (counties && Array.isArray(counties)) {
-      counties.forEach((xcounty) => {
-        console.log('querying for each county ', xcounty.id)
-        // Seems like the syntax for nesting queries like this is incorrect, because I see no fetch requests for the following queries
-        const { data: county, error } = this.$supabase().from('counties')
-          .select('id, name, state_code, geocode, occupation_annual (*), occupation_monthly (*)')
-          .eq('id', xcounty.id)
-          .eq('occupation_annual.county_id', xcounty.id)
-          .eq('occupation_monthly.county_id', xcounty.id)
-        if (county && Array.isArray(county) && county.length > 0) {
-          county[0].occupation_annual.sort(sortForRecentYear)
-          county[0].occupation_monthly.sort(sortForRecentYearAndMonth)
-          commit('setCounty', county[0])
-          xcounty = county[0]
-          console.log(xcounty)
-        } else {
-          console.log(error)
-        }
-      })
-      commit('setCounties', counties)
-      if (!state.mapData.version) {
-        commit('setInitialMapData')
-      }
-      return true
+    if (countyError) {
+      console.log(countyError)
+      return false
     }
 
-    console.log(error)
-    return false
+    commit('setCounties', counties)
+
+    counties.forEach((county) => {
+      commit('setCounty', county)
+    })
+
+    if (!state.mapData.version) {
+      commit('setInitialMapData')
+    }
+    return true
   },
   async getCounty ({ commit }, id) {
     const query = this.$supabase().from('counties')

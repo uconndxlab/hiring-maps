@@ -27,7 +27,6 @@ export default {
     })
   },
   mounted () {
-    console.log('mounted')
     if (!this.bootstrapped) {
       const unsubscribe = this.$store.subscribe((mutation) => {
         if (mutation.type === 'primary/setDataHasBeenRetrieved') {
@@ -37,7 +36,6 @@ export default {
         }
       })
     }
-    console.log('not strapped')
     google.charts.setOnLoadCallback(this.setTotalCountyMapData)
   },
   methods: {
