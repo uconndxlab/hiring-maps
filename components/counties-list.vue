@@ -1,7 +1,7 @@
 <template>
   <div class="counties-list">
     <div v-if="counties.length" class="counties-list-container">
-      <CountiesListItem v-for="county in counties" :key="county.name" :county="county" :county-monthly-postings="countyMonthlyPostings" />
+      <CountiesListItem v-for="county in counties" :key="county.name" :county="county" />
     </div>
   </div>
 </template>
