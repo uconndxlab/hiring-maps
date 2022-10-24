@@ -2,7 +2,7 @@
   <v-card class="mb-5" tile :to="`/counties/${county.id}`">
     <v-card-title>{{ county.name }}</v-card-title>
     <v-card-subtitle>{{ county.geocode }}</v-card-subtitle>
-    <v-card-text>{{ monthlyPostings }}</v-card-text>
+    <v-card-text>{{ monthlyPostings }} Total Job Postings</v-card-text>
   </v-card>
 </template>
 
