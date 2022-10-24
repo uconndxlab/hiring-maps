@@ -3,6 +3,7 @@
 export const state = () => ({
   dataHasBeenRetrieved: false,
   counties: [],
+  counties2021: [],
   county: {},
   mapData: {},
   occupationResults: [],
@@ -14,6 +15,9 @@ export const state = () => ({
 export const getters = {
   counties (state) {
     return state.counties
+  },
+  counties2021 (state) {
+    return state.counties2021
   },
   county (state) {
     return state.county
@@ -127,6 +131,9 @@ export const mutations = {
   setCounty (state, county) {
     state.county = county
   },
+  setCounties2021 (state, counties2021) {
+    state.counties2021 = counties2021
+  },
   setInitialMapData (state) {
     console.log('settingInitialMapData')
     const returnData = new google.visualization.DataTable()
@@ -159,9 +166,8 @@ export const mutations = {
     state.mapData = returnData
   },
 
-  // TODO: Create a function similar to the one below except only data for most recent month.
-  setTotalCountyMapData (state) {
-    console.log('settingTotalCountyMapData')
+  setMonthlyCountyMapData (state) {
+    console.log('settingMonthlyCountyMapData')
     const returnData = new google.visualization.DataTable()
     returnData.addColumn('string', 'id')
     returnData.addColumn('string', 'name')
@@ -170,6 +176,7 @@ export const mutations = {
     for (let i = 0; i < state.counties.length; i++) { // Iterate through each county: i
       let countyJobPostings = 0
       const countyMonthly = state.counties[i].occupation_monthly
+      countyMonthly.sort(sortForRecentYearAndMonth)
       for (let j = 0; j < countyMonthly.length; j++) { // Iterate through each index of occupation monthly: j
         if (countyMonthly[j].county_id === state.counties[i].id) {
           countyJobPostings += countyMonthly[j].job_postings
@@ -204,10 +211,12 @@ export const mutations = {
 
 export const actions = {
   async bootstrap ({ dispatch, commit }) {
+    await dispatch('getCounties2021')
     await dispatch('getCounties')
+    // await dispatch('getRecentMonthCounties')
     await dispatch('fetchOccupations')
     await dispatch('fetchTopTenJobs')
-    await dispatch('fetchTopJobsByCounty')
+    // await dispatch('fetchTopJobsByCounty')
     console.log('bootstrapped')
     commit('setDataHasBeenRetrieved', true)
   },
@@ -233,14 +242,14 @@ export const actions = {
     }
     return true
   },
-  async getCounties2021 ({ commit, state }) {
-    const { data: counties, error } = await this.$supabase()
+  async getCounties2021 ({ commit }) {
+    const { data: counties2021, error } = await this.$supabase()
       .from('counties')
       .select('*')
       .eq('state_code', 'CT')
 
-    if (counties && Array.isArray(counties)) {
-      counties.forEach((county) => { county.job_postings = 0 })
+    if (counties2021 && Array.isArray(counties2021)) {
+      counties2021.forEach((county) => { county.job_postings = 0 })
       const { data: occupations, error: occupationError } = await this.$supabase()
         .from('occupation_monthly')
         .select('year, county_id, job_postings')
@@ -249,14 +258,13 @@ export const actions = {
         console.log(occupationError)
         return false
       }
+      occupations.sort(sortForRecentYearAndMonth)
       occupations.forEach((job) => {
-        counties[job.county_id - 1].job_postings += job.job_postings
+        counties2021[job.county_id - 1].job_postings += job.job_postings
       })
 
-      commit('setCounties', counties)
-      if (!state.mapData.version) {
-        commit('setInitialMapData')
-      }
+      commit('setCounties2021', counties2021)
+
       return true
     }
 
