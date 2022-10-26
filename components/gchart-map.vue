@@ -77,7 +77,6 @@ export default {
     chartSelect () {
       console.log('Chart was selected.')
       const selected = this.chart.getSelection()
-
       for (let i = 0; i < selected.length; i++) {
         const item = selected[i]
         const countyId = item.row + 1

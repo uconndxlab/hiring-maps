@@ -6,6 +6,7 @@ export const state = () => ({
   counties2021: [],
   county: {},
   mapData: {},
+  mapHighlightData: {},
   occupationResults: [],
   occupationSearchLoading: false,
   occupation: {},
@@ -24,6 +25,9 @@ export const getters = {
   },
   mapData (state) {
     return state.mapData
+  },
+  mapHighlightData (state) {
+    return state.mapHighlightData
   },
   bootstrapped (state) {
     return state.dataHasBeenRetrieved
@@ -134,6 +138,24 @@ export const mutations = {
   setCounties2021 (state, counties2021) {
     state.counties2021 = counties2021
   },
+  setMapHighlightData (state) {
+    console.log('highlighting county')
+    const returnData = new google.visualization.DataTable()
+    returnData.addColumn('string', 'id')
+    returnData.addColumn('string', 'name')
+    returnData.addColumn('number', 'value')
+    const data = []
+    state.counties.forEach((county) => {
+      const dataEntry = [
+        county.geocode,
+        county.name,
+        1
+      ]
+      data.push(dataEntry)
+    })
+    returnData.addRows(data)
+    state.mapHighlightData = returnData
+  },
   setInitialMapData (state) {
     console.log('settingInitialMapData')
     const returnData = new google.visualization.DataTable()
@@ -165,7 +187,6 @@ export const mutations = {
     returnData.addRows(data)
     state.mapData = returnData
   },
-
   setMonthlyCountyMapData (state) {
     console.log('settingMonthlyCountyMapData')
     const returnData = new google.visualization.DataTable()

@@ -2,7 +2,7 @@
   <div class="single-county-page">
     <v-row justify="center">
       <v-col cols="12">
-        <GchartMap />
+        <GchartCountyMap :county="county" />
       </v-col>
     </v-row>
 
@@ -27,9 +27,11 @@
 
 <script>
 
-import { mapGetters } from 'vuex'
+import { mapGetters, mapMutations } from 'vuex'
+import GchartCountyMap from '~/components/gchart-county-map.vue'
 
 export default {
+  components: { GchartCountyMap },
   async asyncData ({ params, store }) {
     const county = store.getters['primary/county']
     if (!county || !county.id || county.id !== params.id) {
@@ -62,6 +64,14 @@ export default {
       }
       return this.countyJobPostings2021.toString()
     }
+  },
+  mounted () {
+    this.setMapHighlightData()
+  },
+  methods: {
+    ...mapMutations({
+      setMapHighlightData: 'primary/setMapHighlightData'
+    })
   }
 }
 
