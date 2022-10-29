@@ -185,19 +185,12 @@ export const mutations = {
     returnData.addColumn('string', 'name')
     returnData.addColumn('number', 'Job Postings This Month')
     const data = []
-    for (let i = 0; i < state.counties.length; i++) { // Iterate through each county: i
-      let countyJobPostings = 0
-      const countyMonthly = state.counties[i].occupation_monthly
-      countyMonthly.sort(sortForRecentYearAndMonth)
-      for (let j = 0; j < countyMonthly.length; j++) { // Iterate through each index of occupation monthly: j
-        if (countyMonthly[j].county_id === state.counties[i].id) {
-          countyJobPostings += countyMonthly[j].job_postings
-        }
-      }
+    console.log(state.counties[0].jobs_monthly)
+    for (let i = 0; i < 8; i++) { // Iterate through each county: i
       const totalCountyPostingDataEntry = [
         state.counties[i].geocode,
         state.counties[i].name,
-        parseInt(countyJobPostings)
+        parseInt(state.counties[i].jobs_monthly)
       ]
       data.push(totalCountyPostingDataEntry)
     }
@@ -232,10 +225,10 @@ export const actions = {
     console.log('bootstrapped')
     commit('setDataHasBeenRetrieved', true)
   },
-  // TODO: change query to rpc function and return only jobs for the most recent month
+  // changed query to rpc function and return only jobs for the most recent month
   // rather than the whole occupation monthly table
   async getCounties ({ commit, state }) {
-    const { data: counties, error } = await this.supabase.$rpc('getcountiesmonthly')
+    const { data: counties, error } = await this.$supabase().rpc('getcountiesmonthly')
 
     if (error) {
       console.log(error)
