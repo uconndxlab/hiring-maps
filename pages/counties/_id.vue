@@ -14,8 +14,8 @@
       </v-row>
       <v-row justify="center">
         <v-col cols="12" md="6">
-          <CardStatDisplay :title="`Total Job Postings 2020`" :large="jobPosting2020" />
-          <CardStatDisplay :title="`Total Job Postings in 2021`" :large="jobPosting2021" />
+          <CardStatDisplay :title="`Total job postings this year`" :large="jobPostingThisYear" />
+          <CardStatDisplay :title="`Total job postings this month`" :large="jobPostingThisMonth" />
         </v-col>
         <v-col cols="12" md="6">
           <CardStatDisplay :title="`Industry with Most Demand:`" :large="`{industryDemandName}`" :supporting="`{industryDemandJobs}`" />
@@ -42,27 +42,20 @@ export default {
     ...mapGetters({
       county: 'primary/county',
       bootstrapped: 'primary/bootstrapped',
-      countyMonthlyPostings: 'primary/countyMonthlyPostings',
-      countyJobPostings2020: 'primary/countyJobPostings2020',
-      countyJobPostings2021: 'primary/countyJobPostings2021'
+      countyJobPostingsThisYear: 'primary/countyJobPostingsThisYear',
+      countyJobPostingsThisMonth: 'primary/countyJobPostingsThisMonth'
     }),
-    recentMonthCountyJobPostings () {
-      if (!this.countyMonthlyPostings) {
+    jobPostingThisYear () {
+      if (!this.countyJobPostingsThisYear) {
         return 'No Data'
       }
-      return this.countyMonthlyPostings.toString()
+      return this.countyJobPostingsThisYear.toString()
     },
-    jobPosting2020 () {
-      if (!this.countyJobPostings2020) {
+    jobPostingThisMonth () {
+      if (!this.countyJobPostingsThisMonth) {
         return 'No Data'
       }
-      return this.countyJobPostings2020.toString()
-    },
-    jobPosting2021 () {
-      if (!this.countyJobPostings2021) {
-        return 'No Data'
-      }
-      return this.countyJobPostings2021.toString()
+      return this.countyJobPostingsThisMonth.toString()
     }
   },
   mounted () {

@@ -90,19 +90,8 @@ export const getters = {
   topTenJobPostings (state) {
     return state.topTenJobs
   },
-  // TODO: Fix this function to return data for most recent month not every month
-  countyMonthlyPostings (state) {
-    if (Array.isArray(state.county?.occupation_monthly) && state.county?.occupation_monthly.length > 0) {
-      let totalJobPostings = 0
-      for (let i = 0; i < state.county.occupation_monthly.length; i++) {
-        totalJobPostings += state.county.occupation_monthly[i].job_postings
-      }
-
-      return totalJobPostings
-    }
-    return 0
-  },
-  countyJobPostings2020 (state) {
+  // TODO: turn into rpc function that returns the total job postings in selected county for the most recent year
+  countyJobPostingsThisYear (state) {
     if (Array.isArray(state.county.occupation_monthly) && state.county?.occupation_monthly.length > 0) {
       let totalJobPostings = 0
       for (let i = 0; i < state.county.occupation_monthly.length; i++) {
@@ -114,11 +103,12 @@ export const getters = {
     }
     return 0
   },
-  countyJobPostings2021 (state) {
+  // TODO: turn into rpc function that returns the total job postings in selected county for most recent month
+  countyJobPostingsThisMonth (state) {
     if (Array.isArray(state.county.occupation_monthly) && state.county?.occupation_monthly.length > 0) {
       let totalJobPostings = 0
       for (let i = 0; i < state.county.occupation_monthly.length; i++) {
-        if (state.county.occupation_monthly[i].year === 2021) {
+        if (state.county.occupation_monthly[i].year === 2020) {
           totalJobPostings += state.county.occupation_monthly[i].job_postings
         }
       }
@@ -187,12 +177,13 @@ export const mutations = {
     returnData.addRows(data)
     state.mapData = returnData
   },
+  // TODO: Change logic to fit once getCounties is an rpc function call
   setMonthlyCountyMapData (state) {
     console.log('settingMonthlyCountyMapData')
     const returnData = new google.visualization.DataTable()
     returnData.addColumn('string', 'id')
     returnData.addColumn('string', 'name')
-    returnData.addColumn('number', 'Job Postings')
+    returnData.addColumn('number', 'Job Postings This Month')
     const data = []
     for (let i = 0; i < state.counties.length; i++) { // Iterate through each county: i
       let countyJobPostings = 0
@@ -241,19 +232,17 @@ export const actions = {
     console.log('bootstrapped')
     commit('setDataHasBeenRetrieved', true)
   },
+  // TODO: change query to rpc function and return only jobs for the most recent month
+  // rather than the whole occupation monthly table
   async getCounties ({ commit, state }) {
-    const { data: counties, error: countyError } = await this.$supabase()
-      .from('counties')
-      .select('id, name, state_code, geocode, occupation_annual (*), occupation_monthly (*)')
-      .eq('state_code', 'CT')
+    const { data: counties, error } = await this.supabase.$rpc('getcountiesmonthly')
 
-    if (countyError) {
-      console.log(countyError)
+    if (error) {
+      console.log(error)
       return false
     }
 
     commit('setCounties', counties)
-
     counties.forEach((county) => {
       commit('setCounty', county)
     })
@@ -262,6 +251,27 @@ export const actions = {
       commit('setInitialMapData')
     }
     return true
+
+    // const { data: counties, error: countyError } = await this.$supabase()
+    //   .from('counties')
+    //   .select('id, name, state_code, geocode, occupation_monthly (*)')
+    //   .eq('state_code', 'CT')
+
+    // if (countyError) {
+    //   console.log(countyError)
+    //   return false
+    // }
+
+    // commit('setCounties', counties)
+
+    // counties.forEach((county) => {
+    //   commit('setCounty', county)
+    // })
+
+    // if (!state.mapData.version) {
+    //   commit('setInitialMapData')
+    // }
+    // return true
   },
   async getCounties2021 ({ commit }) {
     const { data: counties2021, error } = await this.$supabase()
