@@ -27,7 +27,7 @@
 
 <script>
 
-import { mapGetters, mapMutations } from 'vuex'
+import { mapActions, mapGetters, mapMutations } from 'vuex'
 import GchartCountyMap from '~/components/gchart-county-map.vue'
 
 export default {
@@ -38,25 +38,32 @@ export default {
       await store.dispatch('primary/getCounty', params.id)
     }
   },
+  // TODO: Fix these functions to display a string, trying to await an object promise currently
+  async jobPostingThisYear () {
+    const value = await this.countyJobPostingsThisYear
+    console.log(value)
+    if (!value) {
+      return 'No Data'
+    }
+    return value.toString()
+  },
+  async jobPostingThisMonth () {
+    const value = await this.countyJobPostingsThisMonth
+
+    if (!value) {
+      return 'No Data'
+    }
+    return value.toString()
+  },
   computed: {
     ...mapGetters({
       county: 'primary/county',
-      bootstrapped: 'primary/bootstrapped',
+      bootstrapped: 'primary/bootstrapped'
+    }),
+    ...mapActions({
       countyJobPostingsThisYear: 'primary/countyJobPostingsThisYear',
       countyJobPostingsThisMonth: 'primary/countyJobPostingsThisMonth'
-    }),
-    jobPostingThisYear () {
-      if (!this.countyJobPostingsThisYear) {
-        return 'No Data'
-      }
-      return this.countyJobPostingsThisYear.toString()
-    },
-    jobPostingThisMonth () {
-      if (!this.countyJobPostingsThisMonth) {
-        return 'No Data'
-      }
-      return this.countyJobPostingsThisMonth.toString()
-    }
+    })
   },
   mounted () {
     this.setMapHighlightData()

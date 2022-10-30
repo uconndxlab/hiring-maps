@@ -89,32 +89,6 @@ export const getters = {
   },
   topTenJobPostings (state) {
     return state.topTenJobs
-  },
-  // TODO: turn into rpc function that returns the total job postings in selected county for the most recent year
-  countyJobPostingsThisYear (state) {
-    if (Array.isArray(state.county.occupation_monthly) && state.county?.occupation_monthly.length > 0) {
-      let totalJobPostings = 0
-      for (let i = 0; i < state.county.occupation_monthly.length; i++) {
-        if (state.county.occupation_monthly[i].year === 2020) {
-          totalJobPostings += state.county.occupation_monthly[i].job_postings
-        }
-      }
-      return totalJobPostings
-    }
-    return 0
-  },
-  // TODO: turn into rpc function that returns the total job postings in selected county for most recent month
-  countyJobPostingsThisMonth (state) {
-    if (Array.isArray(state.county.occupation_monthly) && state.county?.occupation_monthly.length > 0) {
-      let totalJobPostings = 0
-      for (let i = 0; i < state.county.occupation_monthly.length; i++) {
-        if (state.county.occupation_monthly[i].year === 2020) {
-          totalJobPostings += state.county.occupation_monthly[i].job_postings
-        }
-      }
-      return totalJobPostings
-    }
-    return 0
   }
 }
 
@@ -185,7 +159,6 @@ export const mutations = {
     returnData.addColumn('string', 'name')
     returnData.addColumn('number', 'Job Postings This Month')
     const data = []
-    console.log(state.counties[0].jobs_monthly)
     for (let i = 0; i < 8; i++) { // Iterate through each county: i
       const totalCountyPostingDataEntry = [
         state.counties[i].geocode,
@@ -311,6 +284,26 @@ export const actions = {
     }
     console.log(error)
     return false
+  },
+  async countyJobPostingsThisYear ({ state }) {
+    const countyid = state.county.id
+    const { data, error } = await this.$supabase().rpc('countypostingsthisyear', { countyid })
+
+    if (error) {
+      console.log(error)
+      return 0
+    }
+    return data
+  },
+  async countyJobPostingsThisMonth ({ state }) {
+    const countyid = state.county.id
+    const { data, error } = await this.$supabase().rpc('countypostingsthismonth', { countyid })
+
+    if (error) {
+      console.log(error)
+      return 0
+    }
+    return data
   },
   async fetchOccupations ({ commit }, searchOptions) {
     const limit = searchOptions?.limit ? searchOptions.limit : 20
