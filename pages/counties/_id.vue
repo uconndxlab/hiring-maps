@@ -14,8 +14,8 @@
       </v-row>
       <v-row justify="center">
         <v-col cols="12" md="6">
-          <CardStatDisplay :title="`Total job postings this year`" :large="jobPostingThisYear" />
-          <CardStatDisplay :title="`Total job postings this month`" :large="jobPostingThisMonth" />
+          <CardStatDisplay :title="`Total job postings this month`" :large="monthValue" />
+          <CardStatDisplay :title="`Total job postings this year`" :large="yearValue" />
         </v-col>
         <v-col cols="12" md="6">
           <CardStatDisplay :title="`Industry with Most Demand:`" :large="`{industryDemandName}`" :supporting="`{industryDemandJobs}`" />
@@ -38,22 +38,11 @@ export default {
       await store.dispatch('primary/getCounty', params.id)
     }
   },
-  // TODO: Fix these functions to display a string, trying to await an object promise currently
-  async jobPostingThisYear () {
-    const value = await this.countyJobPostingsThisYear
-    console.log(value)
-    if (!value) {
-      return 'No Data'
+  data () {
+    return {
+      yearValue: '',
+      monthValue: ''
     }
-    return value.toString()
-  },
-  async jobPostingThisMonth () {
-    const value = await this.countyJobPostingsThisMonth
-
-    if (!value) {
-      return 'No Data'
-    }
-    return value.toString()
   },
   computed: {
     ...mapGetters({
@@ -65,8 +54,14 @@ export default {
       countyJobPostingsThisMonth: 'primary/countyJobPostingsThisMonth'
     })
   },
-  mounted () {
+  async mounted () {
     this.setMapHighlightData()
+
+    const yearValue = await this.countyJobPostingsThisYear
+    this.yearValue = yearValue.toString()
+
+    const monthValue = await this.countyJobPostingsThisMonth
+    this.monthValue = monthValue.toString()
   },
   methods: {
     ...mapMutations({
