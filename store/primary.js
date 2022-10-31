@@ -191,18 +191,20 @@ export const actions = {
       .eq('state_code', 'CT')
 
     if (counties && Array.isArray(counties)) {
-      counties.forEach((county) => { county.job_postings = 0 })
-      const { data: occupations, error: occupationError } = await this.$supabase()
-        .from('occupation_monthly')
-        .select('year, county_id, job_postings')
-        .eq('year', '2021')
-      if (occupationError) {
-        console.log(occupationError)
+      const query = this.$supabase().rpc('getjobsbycounty')
+      const { data: countiesWithJobs, error: jobserror } = await query
+      if (jobserror) {
+        console.log(error)
         return false
       }
-      occupations.forEach((job) => {
-        counties[job.county_id - 1].job_postings += job.job_postings
-      })
+      const sortByCountyId = (a, b) => (a.id < b.id ? 1 : -1)
+      counties.sort(sortByCountyId)
+      countiesWithJobs.sort(sortByCountyId)
+      for (let i = 0; i < counties.length; i++) {
+        console.log(counties[i], countiesWithJobs[i])
+        counties[i].job_postings = countiesWithJobs[i].job_postings
+      }
+      counties.sort(sortForJobListingsObject)
 
       commit('setCounties', counties)
       if (!state.mapData.version) {
@@ -276,57 +278,18 @@ export const actions = {
     return false
   },
   async fetchTopTenJobs ({ commit }) {
-    const jobs = {}
-    const jobQuery = this.$supabase()
-      .from('occupation_monthly')
-      .select('occupation_id, job_postings, year')
-      .eq('year', '2021')
-    const { data: allJobs, error } = await jobQuery
+    const query = this.$supabase().rpc('gettoptenjobs')
+    const { data: jobs, error } = await query
     if (error) {
       console.log(error)
       return false
     }
-    allJobs.forEach((job) => {
-      const jobId = job.occupation_id
-      if (jobId in jobs) {
-        jobs[jobId] += job.job_postings
-      } else {
-        jobs[jobId] = job.job_postings
-      }
-    })
-    const jobArr = []
-    for (const [key, val] of Object.entries(jobs)) {
-      jobArr.push([key, val])
+    if (jobs && Array.isArray(jobs)) {
+      jobs.sort(job => sortForJobListingsObject)
+      commit('setTopTenJobs', jobs)
     }
-    jobArr.sort(sortForJobListingsArray)
-    const topTenJobs = []
-    const topTenIds = []
-    for (let i = 0; i < 10; i++) {
-      topTenJobs.push([jobArr[i][0], jobArr[i][1]]) //  [....[id, postings],...]
-      topTenIds.push([jobArr[i][0]])
-    }
-    const { data: occupations, error: occupationError } = await this.$supabase()
-      .from('occupations')
-      .select('*')
-      .in('id', topTenIds)
-    if (occupationError) {
-      console.log(occupationError)
-      return false
-    }
-    occupations.forEach((job) => { //  add job posting data to each occupation
-      const jobId = job.id
-      topTenJobs.forEach((j) => {
-        if (parseInt(j[0]) === jobId) {
-          job.job_postings = j[1]
-        }
-      })
-    })
-    occupations.sort(sortForJobListingsObject)
-    commit('setTopTenJobs', occupations)
   }
 }
-
-const sortForJobListingsArray = (a, b) => (a[1] < b[1] ? 1 : -1)
 
 const sortForJobListingsObject = (a, b) => (a.job_postings < b.job_postings ? 1 : -1)
 
