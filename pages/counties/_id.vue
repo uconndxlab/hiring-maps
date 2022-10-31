@@ -6,22 +6,20 @@
       </v-col>
     </v-row>
 
-    <grey-bg>
-      <v-row>
-        <v-col>
-          <h1>{{ county.name }}</h1>
-        </v-col>
-      </v-row>
-      <v-row justify="center">
-        <v-col cols="12" md="6">
-          <CardStatDisplay :title="`Total job postings this month`" :large="monthValue" />
-          <CardStatDisplay :title="`Total job postings this year`" :large="yearValue" />
-        </v-col>
-        <v-col cols="12" md="6">
-          <CardStatDisplay :title="`Industry with Most Demand:`" :large="`{industryDemandName}`" :supporting="`{industryDemandJobs}`" />
-        </v-col>
-      </v-row>
-    </grey-bg>
+    <v-row>
+      <v-col>
+        <h1>{{ county.name }}</h1>
+      </v-col>
+    </v-row>
+    <v-row justify="center">
+      <v-col cols="12" md="6">
+        <CardStatDisplay :title="`Total job postings this month`" :large="monthValue" />
+        <CardStatDisplay :title="`Total job postings this year`" :large="yearValue" />
+      </v-col>
+      <v-col cols="12" md="6">
+        <CardStatDisplay :title="`Occupation with the most demand`" :large="`No data`" :supporting="`Jobs posted this month`" />
+      </v-col>
+    </v-row>
   </div>
 </template>
 

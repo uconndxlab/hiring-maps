@@ -6,24 +6,22 @@
       </v-col>
     </v-row>
 
-    <grey-bg>
-      <v-row>
-        <v-col>
-          <h1>{{ occupation.title }}</h1>
-        </v-col>
-      </v-row>
-      <v-row justify="center">
-        <v-col cols="12" md="6">
-          <card-text :title="`Job Description`">
-            {{ occupation.job_description }}
-          </card-text>
-        </v-col>
-        <v-col cols="12" md="6">
-          <card-stat-display :title="`Average Annual Salary`" :large="annualSalary" :supporting="annualSalaryHourly" />
-          <card-stat-display :title="`Monthly Job Postings`" :large="monthlyPostings" />
-        </v-col>
-      </v-row>
-    </grey-bg>
+    <v-row>
+      <v-col>
+        <h1>{{ occupation.title }}</h1>
+      </v-col>
+    </v-row>
+    <v-row justify="center">
+      <v-col cols="12" md="6">
+        <card-text :title="`Job Description`">
+          {{ occupation.job_description }}
+        </card-text>
+      </v-col>
+      <v-col cols="12" md="6">
+        <card-stat-display :title="`Average Annual Salary`" :large="annualSalary" :supporting="annualSalaryHourly" />
+        <card-stat-display :title="`Monthly Job Postings`" :large="monthlyPostings" />
+      </v-col>
+    </v-row>
   </div>
 </template>
 
