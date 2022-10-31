@@ -39,7 +39,8 @@ export default {
   data () {
     return {
       yearValue: '',
-      monthValue: ''
+      monthValue: '',
+      jobWithMostDemand: {}
     }
   },
   computed: {
@@ -49,7 +50,8 @@ export default {
     }),
     ...mapActions({
       countyJobPostingsThisYear: 'primary/countyJobPostingsThisYear',
-      countyJobPostingsThisMonth: 'primary/countyJobPostingsThisMonth'
+      countyJobPostingsThisMonth: 'primary/countyJobPostingsThisMonth',
+      jobWithMostDemandThisMonthByCounty: 'primary/jobWithMostDemandThisMonthByCounty'
     })
   },
   async mounted () {
@@ -60,6 +62,9 @@ export default {
 
     const monthValue = await this.countyJobPostingsThisMonth
     this.monthValue = monthValue.toString()
+
+    const jobWithMostDemand = await this.jobWithMostDemandThisMonthByCounty
+    this.jobWithMostDemand = jobWithMostDemand
   },
   methods: {
     ...mapMutations({

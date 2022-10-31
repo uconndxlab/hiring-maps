@@ -305,6 +305,17 @@ export const actions = {
     }
     return data
   },
+  async jobWithMostDemandThisMonthByCounty ({ state }) {
+    const countyId = state.county.id
+    const { data, error } = await this.$supabase().rpc('gettopjobscounty', { countyId })
+
+    if (error) {
+      console.log(error)
+      return 0
+    }
+    console.log(data)
+    return data
+  },
   async fetchOccupations ({ commit }, searchOptions) {
     const limit = searchOptions?.limit ? searchOptions.limit : 20
     const start = searchOptions?.start ? searchOptions.start : 0
