@@ -17,7 +17,7 @@
         <CardStatDisplay :title="`Total job postings this year`" :large="yearValue" />
       </v-col>
       <v-col cols="12" md="6">
-        <CardStatDisplay :title="`Occupation with the most demand`" :large="`No data`" :supporting="`Jobs posted this month`" />
+        <CardStatDisplay v-if="jobWithMostDemand.length" :title="`Occupation with the most demand`" :large="jobWithMostDemand[0].name" :supporting="jobWithMostDemand[0].job_postings + ` Jobs posted this month `" />
       </v-col>
     </v-row>
   </div>
@@ -35,8 +35,6 @@ export default {
     if (!county || !county.id || county.id !== params.id) {
       await store.dispatch('primary/getCounty', params.id)
     }
-  },
-  data () {
     return {
       yearValue: '',
       monthValue: '',
@@ -65,6 +63,7 @@ export default {
 
     const jobWithMostDemand = await this.jobWithMostDemandThisMonthByCounty
     this.jobWithMostDemand = jobWithMostDemand
+    console.log(jobWithMostDemand[0].name)
   },
   methods: {
     ...mapMutations({
