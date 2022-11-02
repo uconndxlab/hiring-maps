@@ -13,11 +13,19 @@
     </v-row>
     <v-row justify="center">
       <v-col cols="12" md="6">
-        <CardStatDisplay :title="`Total job postings this month`" :large="monthValue" />
-        <CardStatDisplay :title="`Total job postings this year`" :large="yearValue" />
+        <CardStatDisplay v-if="monthValue != ''" :title="`Total job postings this month`" :large="monthValue" />
+        <CardStatDisplay v-if="yearValue != ''" :title="`Total job postings this year`" :large="yearValue" />
       </v-col>
       <v-col cols="12" md="6">
-        <CardStatDisplay v-if="jobWithMostDemand.length" :title="`Occupation with the most demand`" :large="jobWithMostDemand[0].name" :supporting="jobWithMostDemand[0].job_postings + ` Jobs posted this month `" />
+        <cardTextVue v-if="jobsWithMostDemand.length" :title="`Occupations with the most demand`">
+          <div>
+            <ul>
+              <li v-for="occupation in jobsWithMostDemand" :key="occupation.id">
+                {{ occupation.name }}: {{ occupation.job_postings }} jobs posted this month
+              </li>
+            </ul>
+          </div>
+        </cardTextVue>
       </v-col>
     </v-row>
   </div>
@@ -27,9 +35,10 @@
 
 import { mapActions, mapGetters, mapMutations } from 'vuex'
 import GchartCountyMap from '~/components/gchart-county-map.vue'
+import cardTextVue from '~/components/card-text.vue'
 
 export default {
-  components: { GchartCountyMap },
+  components: { GchartCountyMap, cardTextVue },
   async asyncData ({ params, store }) {
     const county = store.getters['primary/county']
     if (!county || !county.id || county.id !== params.id) {
@@ -38,7 +47,7 @@ export default {
     return {
       yearValue: '',
       monthValue: '',
-      jobWithMostDemand: {}
+      jobsWithMostDemand: {}
     }
   },
   computed: {
@@ -61,9 +70,8 @@ export default {
     const monthValue = await this.countyJobPostingsThisMonth
     this.monthValue = monthValue.toString()
 
-    const jobWithMostDemand = await this.jobWithMostDemandThisMonthByCounty
-    this.jobWithMostDemand = jobWithMostDemand
-    console.log(jobWithMostDemand[0].name)
+    const jobsWithMostDemand = await this.jobWithMostDemandThisMonthByCounty
+    this.jobsWithMostDemand = jobsWithMostDemand
   },
   methods: {
     ...mapMutations({

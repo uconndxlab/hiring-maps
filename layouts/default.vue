@@ -73,6 +73,11 @@ export default {
           icon: 'mdi-format-list-bulleted',
           title: 'Counties',
           to: '/counties'
+        },
+        {
+          icon: 'mdi-format-list-bulleted',
+          title: 'What are Job Zones?',
+          to: '/zones'
         }
       ],
       title: 'Hiring Maps'

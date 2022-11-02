@@ -191,15 +191,19 @@ export const actions = {
   async bootstrap ({ dispatch, commit }) {
     await dispatch('getCounties2021')
     await dispatch('getCounties')
-    // await dispatch('getRecentMonthCounties')
     await dispatch('fetchOccupations')
     await dispatch('fetchTopTenJobs')
     // await dispatch('fetchTopJobsByCounty')
     console.log('bootstrapped')
     commit('setDataHasBeenRetrieved', true)
   },
-  // changed query to rpc function and return only jobs for the most recent month
-  // rather than the whole occupation monthly table
+  /* Function async getCounties({ commit, state })
+  Calls rpc function that returns the id, name, state_code, geocode, and jobs_monthly of each county
+  where jobs_monthly is an integer value representing the total number of job postings in the county for
+  the most recent month.
+  Sets the counties data and individual county data
+  Sets initial map data.
+  */
   async getCounties ({ commit, state }) {
     const { data: counties, error } = await this.$supabase().rpc('getcountiesmonthly')
 
@@ -217,28 +221,22 @@ export const actions = {
       commit('setInitialMapData')
     }
     return true
-
-    // const { data: counties, error: countyError } = await this.$supabase()
-    //   .from('counties')
-    //   .select('id, name, state_code, geocode, occupation_monthly (*)')
-    //   .eq('state_code', 'CT')
-
-    // if (countyError) {
-    //   console.log(countyError)
-    //   return false
-    // }
-
-    // commit('setCounties', counties)
-
-    // counties.forEach((county) => {
-    //   commit('setCounty', county)
-    // })
-
-    // if (!state.mapData.version) {
-    //   commit('setInitialMapData')
-    // }
-    // return true
   },
+  /* Function async getCounties2021 ({ commit })
+  Queries the counties table from supabase and the occupations data for the year 2021
+  Returns a JSON object
+  counties {
+    id: int
+    name: string
+    state_code: string
+    geocode: string
+    occupation_monthy: {
+      year: 2021,
+      county_id: int
+      job_postings: int
+    }
+  }
+   */
   async getCounties2021 ({ commit }) {
     const { data: counties2021, error } = await this.$supabase()
       .from('counties')
@@ -285,6 +283,9 @@ export const actions = {
     console.log(error)
     return false
   },
+  /* countyJobPostingsThisYear ({ state })
+  Calls rpc() function countypostingsthisyear with the input parameter of the current countyid
+  Returns an integer data that represents the total number of job postings in the given county for the most recent year */
   async countyJobPostingsThisYear ({ state }) {
     const countyid = state.county.id
     const { data, error } = await this.$supabase().rpc('countypostingsthisyear', { countyid })
@@ -295,6 +296,9 @@ export const actions = {
     }
     return data
   },
+  /* countyJobPostingsThisMonth ({ state })
+  Calls rpc() function countypostingsthismonth with the input parameter of the current countyid
+  Returns an integer data that represents the total number of job postings in the given county for the most recent month */
   async countyJobPostingsThisMonth ({ state }) {
     const countyid = state.county.id
     const { data, error } = await this.$supabase().rpc('countypostingsthismonth', { countyid })
@@ -305,6 +309,16 @@ export const actions = {
     }
     return data
   },
+  /* jobWithMostDemandThisMonthByCounty ({ state })
+  Calls rpc() function gettopjobscounty with input parameter of the current countyid
+  Returns a JSON object of following form for the name, id, and number of job postings of the top 10
+  jobs in each county.
+  {
+    "occupation_id" : int
+    "name" : string
+    "job_postings" : int
+  },
+  continue for each county */
   async jobWithMostDemandThisMonthByCounty ({ state }) {
     const countyid = state.county.id
     const { data, error } = await this.$supabase().rpc('gettopjobscounty', { countyid })
@@ -339,11 +353,59 @@ export const actions = {
     console.log(error)
     return false
   },
+  /* fetchOccupation ({ commit }, id)
+  Queries supase and returns an object for the specified occupation based on its id
+  Return JSON object format:
+  {
+    "id" : int,
+    "code" : string,
+    "title" : string,
+    "date_added" : string,
+    "job_description" : string,
+    "type" : string,
+    "alternate_titles": [strings]
+    "job_zone_category": string,
+    "related_occupations": [strings],
+    "additional_information": [
+      {
+        "title": string,
+        "link": string
+      }...,
+    ],
+    "detailed_work_activities": [strings],
+    "tools_used": [strings],
+    "technology_skills": [strings],
+    "tasks": [strings],
+    "occupation_annual": [
+      {
+        "id": int,
+        "created_at": string,
+        "county_id": int,
+        "occupation_id": int,
+        "percent_high_school": int,
+        "percent_associates": int,
+        "percent_bachelors": int,
+        "mean_market_salary": int,
+        "year": int
+      }...,
+    ],
+    "occupation_monthy": [
+      {
+        "id": int,
+        "month": int,
+        "year": int,
+        "occupation_id": int,
+        "job_postings": int,
+        "county_id": int
+      }
+    ]
+  }
+  */
   async fetchOccupation ({ commit }, id) {
     const query = this.$supabase()
       .from('occupations')
       .select(
-        'id, code, title, job_description, type, occupation_annual (*), occupation_monthly (*)'
+        'id, code, title, job_description, type, alternate_titles, job_zone_category, related_occupations, additional_information, detailed_work_activities, tools_used, technology_skills, tasks, occupation_annual (*), occupation_monthly (*)'
       )
       .eq('id', id)
 

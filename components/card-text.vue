@@ -1,5 +1,5 @@
 <template>
-  <v-card class="px-6 py-4 mb-5" min-height="400">
+  <v-card class="px-6 py-4 mb-5" min-height="100">
     <v-card-title
       class="mb-2"
     >
