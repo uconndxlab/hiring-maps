@@ -3,9 +3,23 @@
     <GreyBg>
       <v-row justify="center">
         <v-col cols="12">
-          <card-text :title="`Additional Information`">
-            {{ occupation.additional_information }}
-          </card-text>
+          <h2>Additional Information</h2>
+        </v-col>
+      </v-row>
+      <v-row justify="center">
+        <v-col cols="12">
+          <v-list>
+            <v-list-item v-for="item in occupation.additional_information" :key="item.title" @click="navToLink(item.link)">
+              <v-list-item-content>
+                <v-list-item-title>
+                  {{ item.title }}
+                </v-list-item-title>
+                <v-list-item-subtitle>
+                  {{ item.link }}
+                </v-list-item-subtitle>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
         </v-col>
       </v-row>
     </GreyBg>
@@ -23,6 +37,11 @@ export default {
     ...mapGetters({
       occupation: 'primary/occupation'
     })
+  },
+  methods: {
+    navToLink (url) {
+      window.open(url, '_blank')
+    }
   }
 }
 

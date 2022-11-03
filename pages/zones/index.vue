@@ -41,11 +41,11 @@ export default {
       tab: null,
       items: [
         { tab: 'What are Job Zones', content: 'ZoneHomeTabVue' },
-        { tab: 'Category 1', content: 'ZoneOneTabVue' },
-        { tab: 'Category 2', content: 'ZoneTwoTabVue' },
-        { tab: 'Category 3', content: 'ZoneThreeTabVue' },
-        { tab: 'Category 4', content: 'ZoneFourTabVue' },
-        { tab: 'Category 5', content: 'ZoneFiveTabVue' }
+        { tab: 'Zone 1', content: 'ZoneOneTabVue' },
+        { tab: 'Zone 2', content: 'ZoneTwoTabVue' },
+        { tab: 'Zone 3', content: 'ZoneThreeTabVue' },
+        { tab: 'Zone 4', content: 'ZoneFourTabVue' },
+        { tab: 'Zone 5', content: 'ZoneFiveTabVue' }
       ]
     }
   }
