@@ -1,6 +1,6 @@
 <template>
   <div class="single-occupation-page">
-    <v-row class="mt-2 mb-2">
+    <v-row class="mt-2 mb-2 ml-2">
       <v-col>
         <h1>{{ occupation.title }}</h1>
       </v-col>
