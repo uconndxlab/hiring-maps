@@ -1,33 +1,36 @@
 <template>
   <div class="single-county-page">
-    <v-row justify="center">
-      <v-col cols="12">
-        <GchartCountyMap :county="county" />
-      </v-col>
-    </v-row>
+    <GreyBg>
+      <v-row class="mt-2 mb-2 ml-2">
+        <span>
+          <h1>{{ county.name }}</h1>
+          <h3>{{ county.geocode }}</h3>
+        </span>
+      </v-row>
+      <v-row justify="center">
+        <v-col cols="12">
+          <GchartCountyMap :county="county" />
+        </v-col>
+      </v-row>
 
-    <v-row>
-      <v-col>
-        <h1>{{ county.name }}</h1>
-      </v-col>
-    </v-row>
-    <v-row justify="center">
-      <v-col cols="12" md="6">
-        <CardStatDisplay v-if="monthValue != ''" :title="`Total job postings this month`" :large="monthValue" />
-        <CardStatDisplay v-if="yearValue != ''" :title="`Total job postings this year`" :large="yearValue" />
-      </v-col>
-      <v-col cols="12" md="6">
-        <cardTextVue v-if="jobsWithMostDemand.length" :title="`Occupations with the most demand`">
-          <div>
-            <ul>
-              <li v-for="occupation in jobsWithMostDemand" :key="occupation.id">
-                {{ occupation.name }}: {{ occupation.job_postings }} jobs posted this month
-              </li>
-            </ul>
-          </div>
-        </cardTextVue>
-      </v-col>
-    </v-row>
+      <v-row justify="center">
+        <v-col cols="12" md="6">
+          <CardStatDisplay v-if="monthValue != ''" :title="`Total job postings this month`" :large="monthValue" />
+          <CardStatDisplay v-if="yearValue != ''" :title="`Total job postings this year`" :large="yearValue" />
+        </v-col>
+        <v-col cols="12" md="6">
+          <cardTextVue v-if="jobsWithMostDemand.length" :title="`Occupations with the most demand`">
+            <div>
+              <ul>
+                <li v-for="occupation in jobsWithMostDemand" :key="occupation.id">
+                  {{ occupation.name }}: {{ occupation.job_postings }} jobs posted this month
+                </li>
+              </ul>
+            </div>
+          </cardTextVue>
+        </v-col>
+      </v-row>
+    </GreyBg>
   </div>
 </template>
 
