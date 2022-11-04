@@ -13,6 +13,13 @@
               </v-btn>
             </template>
             <v-list>
+              <v-list-item>
+                <v-list-item-title>
+                  <b>
+                    Alternate job titles:
+                  </b>
+                </v-list-item-title>
+              </v-list-item>
               <v-list-item v-for="title in occupation.alternate_titles" :key="title">
                 <v-list-item-title>{{ title }}</v-list-item-title>
               </v-list-item>
