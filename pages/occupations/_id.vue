@@ -2,7 +2,23 @@
   <div class="single-occupation-page">
     <v-row class="mt-2 mb-2 ml-2">
       <v-col>
-        <h1>{{ occupation.title }}</h1>
+        <h1>
+          {{ occupation.title }}
+          <v-menu offset-y open-on-hover>
+            <template #activator="{ on, attrs }">
+              <v-btn icon v-bind="attrs" v-on="on">
+                <v-icon>
+                  mdi-chevron-down
+                </v-icon>
+              </v-btn>
+            </template>
+            <v-list>
+              <v-list-item v-for="title in occupation.alternate_titles" :key="title">
+                <v-list-item-title>{{ title }}</v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </v-menu>
+        </h1>
       </v-col>
     </v-row>
     <v-tabs v-model="tab" color="black">
