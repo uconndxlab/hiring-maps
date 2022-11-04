@@ -1,16 +1,16 @@
 <template>
   <div class="single-county-page">
     <GreyBg>
+      <v-row justify="center">
+        <v-col cols="12">
+          <GchartCountyMap :county="county" />
+        </v-col>
+      </v-row>
       <v-row class="mt-2 mb-2 ml-2">
         <span>
           <h1>{{ county.name }}</h1>
           <h3>{{ county.geocode }}</h3>
         </span>
-      </v-row>
-      <v-row justify="center">
-        <v-col cols="12">
-          <GchartCountyMap :county="county" />
-        </v-col>
       </v-row>
 
       <v-row justify="center">
