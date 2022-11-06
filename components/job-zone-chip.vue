@@ -1,6 +1,6 @@
 <template>
-  <v-card class="px-6 py-4 mb-5" min-height="100">
-    <v-card-title class="mb-2">
+  <div class="text-center">
+    <v-chip outlined :color="color">
       {{ title }}
       <v-tooltip top>
         <template #activator="{ on, attrs }">
@@ -12,23 +12,22 @@
         </template>
         <span>Click here to learn more about Job Zones</span>
       </v-tooltip>
-    </v-card-title>
-    <v-card-text>
-      <div class="text--primary text-body-1">
-        <slot />
-      </div>
-    </v-card-text>
-  </v-card>
+    </v-chip>
+  </div>
 </template>
 
 <script>
-
 export default {
   props: {
     title: {
       type: String,
       required: true
+    },
+    color: {
+      type: String,
+      required: true
     }
   }
 }
+
 </script>

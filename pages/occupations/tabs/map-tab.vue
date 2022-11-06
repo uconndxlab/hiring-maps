@@ -11,9 +11,6 @@
           <card-text :title="`Job Description`">
             {{ occupation.job_description }}
           </card-text>
-          <card-text-tooltip :title="`Job Zone Category`">
-            {{ occupation.job_zone_category }}
-          </card-text-tooltip>
         </v-col>
         <v-col cols="12" md="6">
           <card-stat-display :title="`Average Annual Salary`" :large="annualSalary" :supporting="annualSalaryHourly" />

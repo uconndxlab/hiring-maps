@@ -1,10 +1,9 @@
 <template>
   <div class="job-info-tab">
     <GreyBg>
-      <v-row justify="center">
-        <v-col cols="12">
-          <h2>Detailed Job Information</h2>
-        </v-col>
+      <v-row class="mb-4 ml-4">
+        <h2>Detailed Job Information</h2>
+        <job-zone-chip class="pl-8 pt-1" :title="occupation.job_zone_category" :color="computeChipColor" />
       </v-row>
       <v-row justify="center">
         <v-col cols="12" md="6">
@@ -28,7 +27,22 @@ export default {
   computed: {
     ...mapGetters({
       occupation: 'primary/occupation'
-    })
+    }),
+    computeChipColor () {
+      console.log(this.occupation.job_zone_category)
+      if (this.occupation.job_zone_category === 'Job Zone One: Little or No Preparation Needed: Considerable Preparation Needed') {
+        return '#176B13'
+      } else if (this.occupation.job_zone_category === 'Job Zone Two: Some Preparation Needed') {
+        return '#FFE733'
+      } else if (this.occupation.job_zone_category === 'Job Zone Three: Medium Preparation Needed') {
+        return '#FFAA1C'
+      } else if (this.occupation.job_zone_category === 'Job Zone Four: Considerable Preparation Needed') {
+        return '#FF8C01'
+      } else if (this.occupation.job_zone_category === 'Job Zone Five: Extensive Preparation Needed') {
+        return '#E62836'
+      }
+      return ''
+    }
   }
 }
 
