@@ -10,6 +10,7 @@ export const state = () => ({
   occupationResults: [],
   occupationSearchLoading: false,
   occupation: {},
+  relatedOccupations: {},
   topTenJobs: []
 })
 
@@ -40,6 +41,9 @@ export const getters = {
   },
   occupation (state) {
     return state.occupation
+  },
+  relatedOccupations (state) {
+    return state.relatedOccupations
   },
   occupationAnnualSalary (state) {
     if (
@@ -181,6 +185,9 @@ export const mutations = {
   },
   setOccupation (state, occupation) {
     state.occupation = occupation
+  },
+  setRelatedOccupations (state, relatedOccupations) {
+    state.relatedOccupations = relatedOccupations
   },
   setTopTenJobs (state, occupations) {
     state.topTenJobs = occupations
@@ -352,6 +359,28 @@ export const actions = {
 
     console.log(error)
     return false
+  },
+  /* fetchRelatedOccupations ({ commit }, relatedOccupations)
+  Given a list of occupation.codes return an array of occupations queried by their code */
+  async fetchRelatedOccupations ({ commit, state }) {
+    const relatedOccupations = state.occupation.related_occupations
+    const related = []
+    for (let i = 0; i <= relatedOccupations.length; i++) {
+      const query = this.$supabase()
+        .from('occupations')
+        .select('id, code, title, job_description')
+        .eq('code', relatedOccupations[i])
+
+      const { data, error } = await query
+
+      if (error) {
+        console.log(error)
+        return false
+      }
+      related.push(data)
+    }
+    commit('setRelatedOccupations', related.flat())
+    return true
   },
   /* fetchOccupation ({ commit }, id)
   Queries supase and returns an object for the specified occupation based on its id

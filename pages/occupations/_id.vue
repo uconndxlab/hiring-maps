@@ -34,7 +34,7 @@
       </v-tab>
     </v-tabs>
     <v-tabs-items v-model="tab">
-      <v-tab-item v-for="item in items" :key="item.tab">
+      <v-tab-item v-for="item in items" :key="item.tab" :related="relatedOccupations">
         <component :is="item.content" />
       </v-tab-item>
     </v-tabs-items>
@@ -45,16 +45,19 @@
 import { mapGetters } from 'vuex'
 import MapTabVue from './tabs/map-tab.vue'
 import AdditionalInfoTabVue from './tabs/additional-info-tab.vue'
+import JobInfoTabVue from './tabs/job-info-tab.vue'
 
 export default {
   components: {
     MapTabVue,
-    AdditionalInfoTabVue
+    AdditionalInfoTabVue,
+    JobInfoTabVue
   },
   async asyncData ({ params, store }) {
     const occupation = store.getters['primary/occupation']
     if (!occupation || !occupation.id || occupation.id !== params.id) {
       await store.dispatch('primary/fetchOccupation', params.id)
+      await store.dispatch('primary/fetchRelatedOccupations', occupation.related_occupations)
     }
   },
   data () {
@@ -62,13 +65,15 @@ export default {
       tab: null,
       items: [
         { tab: 'Map and Job description', content: 'MapTabVue' },
+        { tab: 'Detailed Job Info', content: 'JobInfoTabVue' },
         { tab: 'Additional Info', content: 'AdditionalInfoTabVue' }
       ]
     }
   },
   computed: {
     ...mapGetters({
-      occupation: 'primary/occupation'
+      occupation: 'primary/occupation',
+      relatedOccupations: 'primary/relatedOccupations'
     })
   }
 }

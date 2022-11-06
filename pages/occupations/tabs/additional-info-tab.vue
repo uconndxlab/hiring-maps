@@ -8,18 +8,11 @@
       </v-row>
       <v-row justify="center">
         <v-col cols="12">
-          <v-list>
-            <v-list-item v-for="item in occupation.additional_information" :key="item.title" @click="navToLink(item.link)">
-              <v-list-item-content>
-                <v-list-item-title>
-                  {{ item.title }}
-                </v-list-item-title>
-                <v-list-item-subtitle>
-                  {{ item.link }}
-                </v-list-item-subtitle>
-              </v-list-item-content>
-            </v-list-item>
-          </v-list>
+          <related-jobs-list-card :title="`Explore related occupations and industries`" :related="related" />
+          <link-list-card
+            :title="`External links for more information about the field`"
+            :items="occupation.additional_information"
+          />
         </v-col>
       </v-row>
     </GreyBg>
@@ -33,9 +26,14 @@ import GreyBg from '../../../components/grey-bg.vue'
 export default {
   name: 'AdditionalInfoTabVue',
   components: { GreyBg },
+  async asyncData ({ store }) {
+    const occupation = store.getters['primary/occupation']
+    await store.dispatch('primary/fetchRelatedOccupations', occupation.related_occupations)
+  },
   computed: {
     ...mapGetters({
-      occupation: 'primary/occupation'
+      occupation: 'primary/occupation',
+      related: 'primary/relatedOccupations'
     })
   },
   methods: {
