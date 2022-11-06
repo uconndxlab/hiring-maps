@@ -3,7 +3,7 @@
     <GreyBg>
       <v-row class="mb-4 ml-4">
         <h2>Detailed Job Information</h2>
-        <job-zone-chip class="pl-8 pt-1" :title="occupation.job_zone_category" :color="computeChipColor" />
+        <job-zone-chip v-if="occupation.job_zone_category.length" class="pl-8 pt-1" :title="occupation.job_zone_category" :color="computeChipColor" />
       </v-row>
       <v-row justify="center">
         <v-col cols="12" md="6">
@@ -30,7 +30,7 @@ export default {
     }),
     computeChipColor () {
       console.log(this.occupation.job_zone_category)
-      if (this.occupation.job_zone_category === 'Job Zone One: Little or No Preparation Needed: Considerable Preparation Needed') {
+      if (this.occupation.job_zone_category === 'Job Zone One: Little or No Preparation Needed') {
         return '#176B13'
       } else if (this.occupation.job_zone_category === 'Job Zone Two: Some Preparation Needed') {
         return '#FFE733'
