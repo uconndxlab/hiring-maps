@@ -1,14 +1,14 @@
 <template>
   <v-card class="px-6 py-4 mb-5" min-height="100">
-    <v-card-title
-      class="mb-2"
-    >
+    <v-card-title>
       {{ title }}
     </v-card-title>
     <v-card-text>
-      <div class="text--primary text-body-1">
-        <slot />
-      </div>
+      <ul>
+        <li v-for="item in items" :key="item">
+          {{ item }}
+        </li>
+      </ul>
     </v-card-text>
   </v-card>
 </template>
@@ -19,7 +19,12 @@ export default {
     title: {
       type: String,
       required: true
+    },
+    items: {
+      type: Array,
+      required: true
     }
   }
 }
+
 </script>

@@ -74,8 +74,17 @@ export default {
     chartReady () {
       console.log('Chart is ready.')
     },
-    chartSelect (e) {
-      console.log('Chart was selected.', e)
+    chartSelect () {
+      console.log('Chart was selected.')
+      const selected = this.chart.getSelection()
+      for (let i = 0; i < selected.length; i++) {
+        const item = selected[i]
+        const countyId = item.row + 1
+        this.$nuxt.$options.router.push('/counties/' + countyId)
+      }
+    },
+    clearMapData () {
+      this.chart.clearChart()
     }
   }
 }
