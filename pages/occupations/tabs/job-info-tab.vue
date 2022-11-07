@@ -29,7 +29,6 @@ export default {
       occupation: 'primary/occupation'
     }),
     computeChipColor () {
-      console.log(this.occupation.job_zone_category)
       if (this.occupation.job_zone_category === 'Job Zone One: Little or No Preparation Needed') {
         return '#176B13'
       } else if (this.occupation.job_zone_category === 'Job Zone Two: Some Preparation Needed') {

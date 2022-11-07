@@ -140,15 +140,14 @@ export const mutations = {
     returnData.addColumn('number', 'Job Postings')
     const data = []
     state.counties.forEach((county) => {
-      const countyMonthly = state.occupation.occupation_monthly.filter((x) => {
-        return x.county_id === county.id
-      })
-      countyMonthly.sort(sortForRecentYearAndMonth)
+      state.occupation.occupation_monthly.sort(sortForRecentYearAndMonth)
+      const countyIndex = county.id - 1
+      const countyMonthly = state.occupation.occupation_monthly[countyIndex].job_postings
 
       const monthlyCountyDataEntry = [
         county.geocode,
         county.name,
-        countyMonthly.length ? parseInt(countyMonthly[0].job_postings) : 0
+        parseInt(countyMonthly)
       ]
       data.push(monthlyCountyDataEntry)
     })
