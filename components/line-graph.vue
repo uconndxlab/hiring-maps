@@ -1,14 +1,16 @@
 <template>
-  <LineChartGenerator
-    :chart-options="chartOptions"
-    :chart-data="chartData"
-    :chart-id="chartId"
-    :dataset-id-key="datasetIdKey"
-    :plugins="plugins"
-    :styles="styles"
-    :width="width"
-    :height="height"
-  />
+  <v-card class="px-8 py-6">
+    <LineChartGenerator
+      :chart-options="chartOptions"
+      :chart-data="chartData"
+      :chart-id="chartId"
+      :dataset-id-key="datasetIdKey"
+      :plugins="plugins"
+      :styles="styles"
+      :width="width"
+      :height="height"
+    />
+  </v-card>
 </template>
 
 <script>

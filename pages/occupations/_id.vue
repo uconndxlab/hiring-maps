@@ -3,6 +3,11 @@
     <v-row justify="center">
       <v-col cols="12">
         <gchart-map :wait-hook="`primary/setOccupationMonthlyMapData`" />
+        <line-graph
+          :key="graphKey"
+          :datasets="graphDatasets"
+          :labels="graphLabels"
+        />
       </v-col>
     </v-row>
 
@@ -31,13 +36,38 @@
 /* global google */
 
 import { mapGetters, mapMutations } from 'vuex'
+import lineGraph from '~/components/line-graph.vue'
 
 export default {
+  components: { lineGraph },
   async asyncData ({ params, store }) {
     const occupation = store.getters['primary/occupation']
 
     if (!occupation || !occupation.id || occupation.id !== params.id) {
       await store.dispatch('primary/fetchOccupation', params.id)
+    }
+  },
+  data () {
+    return {
+      graphKey: 0,
+      graphDatasets: [
+        {
+          borderColor: (ctx) => {
+            const canvas = ctx.chart.ctx
+            const gradient = canvas.createLinearGradient(0, 0, 0, 275)
+            gradient.addColorStop(0, 'rgb(0, 255, 0)')
+            gradient.addColorStop(0.25, 'rgb(16, 150, 24)')
+            gradient.addColorStop(0.5, 'rgb(0, 196, 75)')
+            gradient.addColorStop(0.75, 'rgb(114, 212, 114)')
+            gradient.addColorStop(1.0, 'rgb(239, 230, 220)')
+            return gradient
+          },
+          cubicInterpolationMode: 'monotone',
+          label: '',
+          data: []
+        }
+      ],
+      graphLabels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
     }
   },
   computed: {
@@ -87,11 +117,34 @@ export default {
     } else {
       google.charts.setOnLoadCallback(this.setOccupationMonthlyMapData)
     }
+    const fetchJobPostingsById = async () => {
+      const id = this.occupation.id
+      const query = this.$supabase().rpc('getjobmonthlypostings', { jobid: id })
+      const { data: jobPostingsMonthly, error } = await query
+      if (error) {
+        console.log(error)
+        return false
+      }
+      console.log('JOB POSTINGS', jobPostingsMonthly)
+      const postings = []
+      jobPostingsMonthly.forEach((month) => {
+        console.log('MONTH', month)
+        postings[month.month - 1] = month.job_postings
+      })
+      this.setGraphData(postings)
+    }
+    fetchJobPostingsById()
   },
   methods: {
     ...mapMutations({
       setOccupationMonthlyMapData: 'primary/setOccupationMonthlyMapData'
-    })
+    }),
+    setGraphData (data) {
+      console.log(data)
+      this.graphDatasets[0].data = data
+      this.graphDatasets[0].label = `Monthly Job Postings for ${this.occupation.title}`
+      this.graphKey++
+    }
   }
 }
 </script>

@@ -46,14 +46,25 @@ export default {
   },
   data () {
     return {
-      graphkey: 0,
+      graphKey: 0,
       graphDatasets: [
         {
-          label: 'test',
+          borderColor: (ctx) => {
+            const canvas = ctx.chart.ctx
+            const gradient = canvas.createLinearGradient(0, 0, 0, 275)
+            gradient.addColorStop(0, 'rgb(0, 255, 0)')
+            gradient.addColorStop(0.25, 'rgb(16, 150, 24)')
+            gradient.addColorStop(0.5, 'rgb(0, 196, 75)')
+            gradient.addColorStop(0.75, 'rgb(114, 212, 114)')
+            gradient.addColorStop(1.0, 'rgb(239, 230, 220)')
+            return gradient
+          },
+          cubicInterpolationMode: 'monotone',
+          label: '',
           data: []
         }
       ],
-      graphLabels: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+      graphLabels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
     }
   },
   computed: {
@@ -68,9 +79,6 @@ export default {
       }
       return this.countyMonthlyPostings.toString()
     }
-  },
-  created () {
-
   },
   mounted () {
     if (!this.bootstrapped) {
@@ -96,7 +104,6 @@ export default {
       JobPostingsMonthly.forEach((month) => {
         postings[month.month - 1] = month.job_postings
       })
-      console.log(postings)
       this.setGraphData(postings)
     }
     fetchCountyJobPostings()
@@ -107,6 +114,7 @@ export default {
     }),
     setGraphData (data) {
       this.graphDatasets[0].data = data
+      this.graphDatasets[0].label = `Monthly Job Postings for ${this.county.name} County`
       this.graphKey++
     }
   }
