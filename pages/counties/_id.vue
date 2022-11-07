@@ -4,11 +4,6 @@
       <v-row justify="center">
         <v-col cols="12">
           <GchartCountyMap :county="county" />
-          <line-graph
-            :key="graphKey"
-            :datasets="graphDatasets"
-            :labels="graphLabels"
-          />
         </v-col>
       </v-row>
       <v-row class="mt-2 mb-2 ml-2">
@@ -16,6 +11,15 @@
           <h1>{{ county.name }}</h1>
           <h3>{{ county.geocode }}</h3>
         </span>
+      </v-row>
+      <v-row>
+        <v-col cols="12">
+          <line-graph
+            :key="graphKey"
+            :datasets="graphDatasets"
+            :labels="graphLabels"
+          />
+        </v-col>
       </v-row>
 
       <v-row justify="center">
