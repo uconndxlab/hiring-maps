@@ -4,10 +4,13 @@
       <v-col>
         <h1>
           {{ occupation.title }}
+          <v-chip outlined label>
+            Type: {{ occupation.type }}
+          </v-chip>
           <v-menu offset-y open-on-hover>
             <template #activator="{ on, attrs }">
               <v-btn icon v-bind="attrs" v-on="on">
-                <v-icon>
+                <v-icon large color="green darken-2">
                   mdi-chevron-down
                 </v-icon>
               </v-btn>
@@ -16,7 +19,7 @@
               <v-list-item>
                 <v-list-item-title>
                   <b>
-                    Alternate job titles:
+                    Alternate titles:
                   </b>
                 </v-list-item-title>
               </v-list-item>
@@ -64,7 +67,7 @@ export default {
     return {
       tab: null,
       items: [
-        { tab: 'Map and Job description', content: 'MapTabVue' },
+        { tab: 'Map and Description', content: 'MapTabVue' },
         { tab: 'Detailed Job Info', content: 'JobInfoTabVue' },
         { tab: 'Additional Info', content: 'AdditionalInfoTabVue' }
       ]
