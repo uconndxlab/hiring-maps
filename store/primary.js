@@ -129,7 +129,17 @@ export const mutations = {
     const returnData = new google.visualization.DataTable()
     returnData.addColumn('string', 'id')
     returnData.addColumn('string', 'name')
-    returnData.addColumn('number', 'Job Postings')
+    returnData.addColumn('number', '')
+    const data = []
+    state.counties.forEach((county) => {
+      const dataEntry = [
+        county.geocode,
+        county.name,
+        0
+      ]
+      data.push(dataEntry)
+    })
+    returnData.addRows(data)
     state.mapData = returnData
   },
   setOccupationMonthlyMapData (state) {
@@ -244,35 +254,6 @@ export const actions = {
   }
    */
   async getCounties2021 ({ commit }) {
-    const { data: counties2021, error } = await this.$supabase()
-      .from('counties')
-      .select('*')
-      .eq('state_code', 'CT')
-
-    if (counties2021 && Array.isArray(counties2021)) {
-      counties2021.forEach((county) => { county.job_postings = 0 })
-      const { data: occupations, error: occupationError } = await this.$supabase()
-        .from('occupation_monthly')
-        .select('year, county_id, job_postings')
-        .eq('year', '2021')
-      if (occupationError) {
-        console.log(occupationError)
-        return false
-      }
-      occupations.sort(sortForRecentYearAndMonth)
-      occupations.forEach((job) => {
-        counties2021[job.county_id - 1].job_postings += job.job_postings
-      })
-
-      commit('setCounties2021', counties2021)
-
-      return true
-    }
-
-    console.log(error)
-    return false
-  },
-  async getCountiesParker ({ commit, state }) {
     const { data: counties, error } = await this.$supabase()
       .from('counties')
       .select('*')
@@ -289,15 +270,11 @@ export const actions = {
       counties.sort(sortByCountyId)
       countiesWithJobs.sort(sortByCountyId)
       for (let i = 0; i < counties.length; i++) {
-        console.log(counties[i], countiesWithJobs[i])
         counties[i].job_postings = countiesWithJobs[i].job_postings
       }
       counties.sort(sortForJobListingsObject)
 
-      commit('setCounties', counties)
-      if (!state.mapData.version) {
-        commit('setInitialMapData')
-      }
+      commit('setCounties2021', counties)
       return true
     }
 

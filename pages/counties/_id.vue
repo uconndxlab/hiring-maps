@@ -101,10 +101,10 @@ export default {
     this.setMapHighlightData()
 
     const yearValue = await this.countyJobPostingsThisYear
-    this.yearValue = yearValue.toString()
+    this.yearValue = yearValue.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
 
     const monthValue = await this.countyJobPostingsThisMonth
-    this.monthValue = monthValue.toString()
+    this.monthValue = monthValue.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
 
     const jobsWithMostDemand = await this.jobWithMostDemandThisMonthByCounty
     this.jobsWithMostDemand = jobsWithMostDemand

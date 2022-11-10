@@ -7,7 +7,7 @@
     </v-row>
     <v-row>
       <v-col cols="12" class="mb-4 mt-8">
-        <CountiesList />
+        <CountiesList v-if="counties.length" />
       </v-col>
     </v-row>
   </div>

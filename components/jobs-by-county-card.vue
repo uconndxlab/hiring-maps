@@ -2,8 +2,8 @@
   <card-text :title="`Number of Job Postings by County for 2021`">
     <div>
       <ul>
-        <li v-for="county in counties2021" :key="`county-${county.id}`">
-          {{ county.name }} ({{ county.job_postings }})
+        <li v-for="county in counties2021" :key="county.id">
+          {{ county.name }} ({{ numberWithCommas(county.job_postings) }})
         </li>
       </ul>
     </div>
@@ -24,7 +24,10 @@ export default {
       counties2021: 'primary/counties2021'
     })
   },
-  mounted () {
+  methods: {
+    numberWithCommas (x) {
+      return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+    }
   }
 }
 </script>

@@ -2,8 +2,8 @@
   <card-text :title="`Top Job Postings for 2021`">
     <div>
       <ul>
-        <li v-for="job in topTenJobs" :key="`job-${job.id}`">
-          {{ job.name }} ({{ job.job_postings }} listings)
+        <li v-for="job in topTenJobs" :key="job.id">
+          {{ job.name }} ({{ numberWithCommas(job.job_postings) }} listings)
         </li>
       </ul>
     </div>
@@ -28,6 +28,11 @@ export default {
     const current = new Date()
     const currentMonth = current.toLocaleString('default', { month: 'long' })
     this.month = currentMonth
+  },
+  methods: {
+    numberWithCommas (x) {
+      return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+    }
   }
 }
 </script>

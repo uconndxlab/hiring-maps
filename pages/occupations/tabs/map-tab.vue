@@ -114,10 +114,8 @@ export default {
         console.log(error)
         return false
       }
-      console.log('JOB POSTINGS', jobPostingsMonthly)
       const postings = []
       jobPostingsMonthly.forEach((month) => {
-        console.log('MONTH', month)
         postings[month.month - 1] = month.job_postings
       })
       this.setGraphData(postings)
@@ -129,7 +127,6 @@ export default {
       setOccupationMonthlyMapData: 'primary/setOccupationMonthlyMapData'
     }),
     setGraphData (data) {
-      console.log(data)
       this.graphDatasets[0].data = data
       this.graphDatasets[0].label = `Monthly Job Postings for ${this.occupation.title}`
       this.graphKey++
