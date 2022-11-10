@@ -3,7 +3,7 @@
     <div>
       <ul>
         <li v-for="county in counties2021" :key="`county-${county.id}`">
-          {{ county.name }} ({{ county.job_postings }})
+          {{ county.name }} ({{ numberWithCommas(county.job_postings) }})
         </li>
       </ul>
     </div>
@@ -25,6 +25,11 @@ export default {
     })
   },
   mounted () {
+  },
+  methods: {
+    numberWithCommas (x) {
+      return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+    }
   }
 }
 </script>

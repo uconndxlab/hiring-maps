@@ -129,7 +129,17 @@ export const mutations = {
     const returnData = new google.visualization.DataTable()
     returnData.addColumn('string', 'id')
     returnData.addColumn('string', 'name')
-    returnData.addColumn('number', 'Job Postings')
+    returnData.addColumn('number', '')
+    const data = []
+    state.counties.forEach((county) => {
+      const dataEntry = [
+        county.geocode,
+        county.name,
+        0
+      ]
+      data.push(dataEntry)
+    })
+    returnData.addRows(data)
     state.mapData = returnData
   },
   setOccupationMonthlyMapData (state) {
