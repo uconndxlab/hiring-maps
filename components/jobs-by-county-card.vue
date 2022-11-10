@@ -2,7 +2,7 @@
   <card-text :title="`Number of Job Postings by County for 2021`">
     <div>
       <ul>
-        <li v-for="county in counties2021" :key="`county-${county.id}`">
+        <li v-for="county in counties2021" :key="county.id">
           {{ county.name }} ({{ numberWithCommas(county.job_postings) }})
         </li>
       </ul>
@@ -23,8 +23,6 @@ export default {
     ...mapGetters({
       counties2021: 'primary/counties2021'
     })
-  },
-  mounted () {
   },
   methods: {
     numberWithCommas (x) {

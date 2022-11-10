@@ -2,7 +2,7 @@
   <card-text :title="`Top Job Postings for 2021`">
     <div>
       <ul>
-        <li v-for="job in topTenJobs" :key="`job-${job.id}`">
+        <li v-for="job in topTenJobs" :key="job.id">
           {{ job.name }} ({{ numberWithCommas(job.job_postings) }} listings)
         </li>
       </ul>
