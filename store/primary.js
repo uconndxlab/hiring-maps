@@ -345,8 +345,8 @@ export const actions = {
     return data
   },
   async fetchOccupations ({ commit }, searchOptions) {
-    const limit = searchOptions?.limit ? searchOptions.limit : 20
-    const start = searchOptions?.start ? searchOptions.start : 0
+    // const limit = searchOptions?.limit ? searchOptions.limit : 100
+    // const start = searchOptions?.start ? searchOptions.start : 0
 
     let query = this.$supabase()
       .from('occupations')
@@ -356,7 +356,7 @@ export const actions = {
       query = query.ilike('title', `%${searchOptions.query}%`)
     }
 
-    query = query.range(start, limit - 1)
+    // query = query.range(start, limit - 1)
 
     const { data: occupations, error } = await query
 
