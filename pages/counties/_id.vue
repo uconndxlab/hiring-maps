@@ -29,13 +29,18 @@
         </v-col>
         <v-col cols="12" md="6">
           <cardTextVue v-if="jobsWithMostDemand.length" :title="`Occupations with the most demand`">
-            <div>
-              <ul>
-                <li v-for="occupation in jobsWithMostDemand" :key="occupation.id">
-                  {{ occupation.name }}: {{ occupation.job_postings }} jobs posted this month
-                </li>
-              </ul>
-            </div>
+            <v-list>
+              <v-list-item v-for="occupation in jobsWithMostDemand" :key="occupation.title" :to="`/occupations/` + occupation.occupation_id.toString()">
+                <v-list-item-content>
+                  <v-list-item-title>
+                    {{ occupation.name }}
+                  </v-list-item-title>
+                  <v-list-item-subtitle>
+                    {{ occupation.job_postings }} jobs posted this month
+                  </v-list-item-subtitle>
+                </v-list-item-content>
+              </v-list-item>
+            </v-list>
           </cardTextVue>
         </v-col>
       </v-row>
@@ -108,6 +113,7 @@ export default {
 
     const jobsWithMostDemand = await this.jobWithMostDemandThisMonthByCounty
     this.jobsWithMostDemand = jobsWithMostDemand
+
     const fetchCountyJobPostings = async () => {
       const id = this.county.id
       const query = this.$supabase().rpc('getcountyjobsyear', { countyid: id })
