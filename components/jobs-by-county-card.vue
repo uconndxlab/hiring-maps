@@ -3,7 +3,7 @@
     <div>
       <ul>
         <li v-for="county in counties2021" :key="county.id">
-          {{ county.name }} ({{ numberWithCommas(county.job_postings) }})
+          <homepageListItem :list-item="county" />
         </li>
       </ul>
     </div>
@@ -12,8 +12,10 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import homepageListItem from './homepage-list-item.vue'
 
 export default {
+  components: { homepageListItem },
   data () {
     return {
       month: 'Current Month'
