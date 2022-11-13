@@ -21,7 +21,7 @@ export default {
   data () {
     return {
       chart: null,
-      mapData: google.visualization.arrayToDataTable([
+      mapData: [
         ['County', 'name', ''],
         ['CT-01', 'Fairfield', 0],
         ['CT-02', 'Hartford', 0],
@@ -30,8 +30,7 @@ export default {
         ['CT-05', 'New Haven', 0],
         ['CT-06', 'New London', 0],
         ['CT-07', 'Tolland', 0],
-        ['CT-08', 'Windham', 0]
-      ]),
+        ['CT-08', 'Windham', 0]],
       domElementId: 'map-element',
       chartOptions: {
         colorAxis: {
@@ -47,6 +46,7 @@ export default {
   },
   methods: {
     drawMap () {
+      this.mapData = google.visualization.arrayToDataTable(this.mapData)
       google.visualization.GeoChart.setMapsSource('/maps_counties')
 
       this.chart = new google.visualization.GeoChart(document.getElementById(this.domElementId))
