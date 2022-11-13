@@ -142,7 +142,6 @@ export const mutations = {
     returnData.addRows(data)
     state.mapData = returnData
   },
-  // TODO: Change logic to fit once getCounties is an rpc function call
   setMonthlyCountyMapData (state) {
     console.log('settingMonthlyCountyMapData')
     const returnData = new google.visualization.DataTable()
