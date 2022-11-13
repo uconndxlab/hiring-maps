@@ -7,7 +7,7 @@
           <v-chip outlined label>
             Type: {{ occupation.type }}
           </v-chip>
-          <v-menu offset-y open-on-hover>
+          <v-menu v-if="occupation.alternate_titles.length" offset-y open-on-hover>
             <template #activator="{ on, attrs }">
               <v-btn icon v-bind="attrs" v-on="on">
                 <v-icon large color="green darken-2">
@@ -31,16 +31,17 @@
         </h1>
       </v-col>
     </v-row>
-    <v-tabs v-model="tab" color="black">
+    <v-tabs v-if="occupation.type === 'occupation'" v-model="tab" color="black">
       <v-tab v-for="item in items" :key="item.tab">
         {{ item.tab }}
       </v-tab>
+      <v-tabs-items v-model="tab">
+        <v-tab-item v-for="item in items" :key="item.tab" :related="relatedOccupations">
+          <component :is="item.content" />
+        </v-tab-item>
+      </v-tabs-items>
     </v-tabs>
-    <v-tabs-items v-model="tab">
-      <v-tab-item v-for="item in items" :key="item.tab" :related="relatedOccupations">
-        <component :is="item.content" />
-      </v-tab-item>
-    </v-tabs-items>
+    <MapTabVue v-else />
   </div>
 </template>
 

@@ -6,6 +6,7 @@
           <gchart-map :wait-hook="`primary/setOccupationMonthlyMapData`" />
           <line-graph
             :key="graphKey"
+            class="mt-6"
             :datasets="graphDatasets"
             :labels="graphLabels"
           />
@@ -13,7 +14,7 @@
       </v-row>
       <v-row justify="center">
         <v-col cols="12" md="6">
-          <card-text :title="`Job Description`">
+          <card-text v-if="occupation.job_description" :title="`Job Description`">
             {{ occupation.job_description }}
           </card-text>
         </v-col>
