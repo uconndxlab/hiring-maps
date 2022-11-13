@@ -50,7 +50,7 @@
 
 <script>
 
-import { mapActions, mapGetters, mapMutations } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 import lineGraph from '~/components/line-graph.vue'
 import GchartCountyMap from '~/components/gchart-county-map.vue'
 import cardTextVue from '~/components/card-text.vue'
@@ -103,8 +103,6 @@ export default {
     })
   },
   async mounted () {
-    this.setMapHighlightData()
-
     const yearValue = await this.countyJobPostingsThisYear
     this.yearValue = yearValue.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
 
@@ -131,9 +129,6 @@ export default {
     fetchCountyJobPostings()
   },
   methods: {
-    ...mapMutations({
-      setMapHighlightData: 'primary/setMapHighlightData'
-    }),
     setGraphData (data) {
       this.graphDatasets[0].data = data
       this.graphDatasets[0].label = `Monthly Job Postings for ${this.county.name} County`

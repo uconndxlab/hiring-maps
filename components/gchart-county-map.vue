@@ -43,7 +43,7 @@ export default {
     }
   },
   mounted () {
-    this.drawMap()
+    google.charts.setOnLoadCallback(this.drawMap)
   },
   methods: {
     drawMap () {
