@@ -8,8 +8,9 @@
       </v-row>
       <v-row justify="center">
         <v-col cols="12">
-          <related-jobs-list-card :title="`Explore related occupations and industries`" :related="related" />
+          <related-jobs-list-card v-if="related.length" :title="`Explore related occupations and industries`" :related="related" />
           <link-list-card
+            v-if="occupation.additional_information.length"
             :title="`External links for more information about the field`"
             :items="occupation.additional_information"
           />

@@ -3,16 +3,16 @@
     <GreyBg>
       <v-row class="mb-4 ml-4">
         <h2>Detailed Job Information</h2>
-        <job-zone-chip v-if="occupation.job_zone_category.length" class="pl-8 pt-1" :title="occupation.job_zone_category" :color="computeChipColor" />
+        <job-zone-chip v-if="occupation.job_zone_category" class="pl-8 pt-1" :title="occupation.job_zone_category" :color="computeChipColor" />
       </v-row>
       <v-row justify="center">
         <v-col cols="12" md="6">
-          <job-info-list-card :title="`Detailed Work Activities`" :items="occupation.detailed_work_activities" />
-          <job-info-list-card :title="`Tools Used`" :items="occupation.tools_used" />
+          <job-info-list-card v-if="occupation.detailed_work_activities.length" :title="`Detailed Work Activities`" :items="occupation.detailed_work_activities" />
+          <job-info-list-card v-if="occupation.tools_used.length" :title="`Tools Used`" :items="occupation.tools_used" />
         </v-col>
         <v-col cols="12" md="6">
-          <job-info-list-card :title="`Technology Skills`" :items="occupation.technology_skills" />
-          <job-info-list-card :title="`Common Tasks`" :items="occupation.tasks" />
+          <job-info-list-card v-if="occupation.technology_skills.length" :title="`Technology Skills`" :items="occupation.technology_skills" />
+          <job-info-list-card v-if="occupation.tasks.length" :title="`Common Tasks`" :items="occupation.tasks" />
         </v-col>
       </v-row>
     </GreyBg>
