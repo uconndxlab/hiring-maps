@@ -5,7 +5,7 @@
         <h1>Learn about Job Zone Categories</h1>
       </v-col>
     </v-row>
-    <v-tabs v-model="tab" color="black">
+    <v-tabs v-model="tab" grow center-active color="black">
       <v-tab v-for="item in items" :key="item.tab">
         {{ item.tab }}
       </v-tab>

@@ -1,47 +1,43 @@
 <template>
   <div class="single-occupation-page">
     <v-row class="mt-2 mb-2 ml-2">
-      <v-col>
+      <v-col cols="12">
         <h1>
           {{ occupation.title }}
+          <alt-titles-dropdown :alternate-titles="occupation.alternate_titles" />
           <v-chip outlined label>
             Type: {{ occupation.type }}
           </v-chip>
-          <v-menu v-if="occupation.alternate_titles.length" offset-y open-on-hover>
-            <template #activator="{ on, attrs }">
-              <v-btn icon v-bind="attrs" v-on="on">
-                <v-icon large color="green darken-2">
-                  mdi-chevron-down
-                </v-icon>
-              </v-btn>
-            </template>
-            <v-list>
-              <v-list-item>
-                <v-list-item-title>
-                  <b>
-                    Alternate titles:
-                  </b>
-                </v-list-item-title>
-              </v-list-item>
-              <v-list-item v-for="title in occupation.alternate_titles" :key="title">
-                <v-list-item-title>{{ title }}</v-list-item-title>
-              </v-list-item>
-            </v-list>
-          </v-menu>
         </h1>
       </v-col>
     </v-row>
-    <v-tabs v-if="occupation.type === 'occupation'" v-model="tab" color="black">
-      <v-tab v-for="item in items" :key="item.tab">
-        {{ item.tab }}
-      </v-tab>
-      <v-tabs-items v-model="tab">
-        <v-tab-item v-for="item in items" :key="item.tab" :related="relatedOccupations">
-          <component :is="item.content" />
-        </v-tab-item>
-      </v-tabs-items>
-    </v-tabs>
-    <MapTabVue v-else />
+    <div v-if="occupation.type === 'occupation'">
+      <v-row justify="center">
+        <v-col cols="12">
+          <v-tabs v-model="tab" grow center-active color="black">
+            <v-tab v-for="item in items" :key="item.tab">
+              {{ item.tab }}
+            </v-tab>
+          </v-tabs>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col cols="12">
+          <v-tabs-items v-model="tab">
+            <v-tab-item v-for="item in items" :key="item.tab" :related="relatedOccupations">
+              <component :is="item.content" />
+            </v-tab-item>
+          </v-tabs-items>
+        </v-col>
+      </v-row>
+    </div>
+    <div v-else>
+      <v-row>
+        <v-col cols="12">
+          <MapTabVue />
+        </v-col>
+      </v-row>
+    </div>
   </div>
 </template>
 
