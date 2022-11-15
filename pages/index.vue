@@ -1,16 +1,20 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <template>
-  <v-row justify="center">
-    <v-col cols="12">
-      <gchart-map />
-    </v-col>
-    <v-col cols="6">
-      <TopJobsCard />
-    </v-col>
-    <v-col cols="6">
-      <JobsByCountyCard />
-    </v-col>
-  </v-row>
+  <div class="home">
+    <v-row justify="center">
+      <v-col cols="12">
+        <gchart-map />
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col cols="12">
+        <TopJobsCard />
+      </v-col>
+      <v-col cols="12">
+        <JobsByCountyCard />
+      </v-col>
+    </v-row>
+  </div>
 </template>
 
 <script>
