@@ -1,21 +1,13 @@
 <template>
   <card-text :title="`Number of Job Postings by County for 2021`">
-    <div>
-      <ul>
-        <li v-for="county in counties2021" :key="county.id">
-          <homepageListItem :list-item="county" />
-        </li>
-      </ul>
-    </div>
+    <HomepageListItem v-for="county in counties2021" :key="county.id" :list-item="county" />
   </card-text>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
-import homepageListItem from './homepage-list-item.vue'
 
 export default {
-  components: { homepageListItem },
   data () {
     return {
       month: 'Current Month'
