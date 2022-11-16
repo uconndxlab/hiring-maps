@@ -1,12 +1,6 @@
 <template>
   <card-text :title="`Number of Job Postings by County for 2021`">
-    <div>
-      <ul>
-        <li v-for="county in counties2021" :key="county.id">
-          {{ county.name }} ({{ numberWithCommas(county.job_postings) }})
-        </li>
-      </ul>
-    </div>
+    <HomepageListItem v-for="county in counties2021" :key="county.id" :list-item="county" />
   </card-text>
 </template>
 
