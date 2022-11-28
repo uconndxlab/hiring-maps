@@ -9,13 +9,15 @@
     <v-row>
       <v-col>
         <card-text :title="`Top Jobs that Require ${skill.name}`">
-          <HomepageListItem v-for="job in topTenJobs" :key="job.name" :list-item="job" />
+          <v-list-item v-for="job in relatedJobs" :key="job.occupation_id" :to="`/occupations/${job.occupation_id}`">
+            {{ job.name }}
+          </v-list-item>
         </card-text>
       </v-col>
       <v-col>
         <cardText :title="`Skills Related to ${skill.name}`">
           <v-list>
-            <v-list-item v-for="skill in skills" :key="skill.id" :to="`${skill.id}`">
+            <v-list-item v-for="skill in skills" :key="skill.skill_id" :to="`${skill.skill_id}`">
               {{ skill.name }}
             </v-list-item>
           </v-list>
@@ -39,41 +41,49 @@ export default {
   },
   data () {
     return {
-      skills: [{
-        id: 106,
-        name: 'Critical Thinking'
-      },
-      {
-        id: 113,
-        name: 'Time Management'
-      },
-      {
-        id: 73,
-        name: 'Mathematics',
-        related_jobs: []
-      },
-      {
-        id: 131,
-        name: 'Programming',
-        related_jobs: []
-      },
-      {
-        id: 124,
-        name: 'Management of Financial Resources',
-        related_jobs: []
-      }]
+      relatedJobs: [],
+      skills: [
+        {
+          skill_id: 2,
+          name: 'Mathematical Reasoning'
+        },
+        {
+          skill_id: 110,
+          name: 'Complex Problem Solving'
+        },
+        {
+          skill_id: 113,
+          name: 'Time Management'
+        },
+        {
+          skill_id: 117,
+          name: 'Social Perceptiveness'
+        }
+      ]
     }
   },
   computed: {
     ...mapGetters({
       skill: 'primary/skill',
-      bootstrapped: 'primary/bootstraped',
-      topTenJobs: 'primary/topTenJobPostings'
+      bootstrapped: 'primary/bootstraped'
     })
   },
   mounted () {
+    const fetchRelatedJobs = async (skill) => {
+      const query = this.$supabase().rpc('jobsrelatedtoskill', { skillid: skill })
+      const { data, error } = await query
+      if (error) {
+        console.log(error)
+        return false
+      }
+      this.setRelatedJobs(data)
+    }
+    fetchRelatedJobs(this.skill.id)
   },
   methods: {
+    setRelatedJobs (jobArr) {
+      this.relatedJobs = jobArr
+    }
   }
 }
 </script>

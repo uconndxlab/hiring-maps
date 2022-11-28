@@ -7,7 +7,6 @@
             {{ skill.name }}
           </v-list-item>
         </v-list>
-        {{ skills }}
       </card-text>
     </v-col>
   </v-row>
@@ -37,7 +36,14 @@ export default {
         console.log(error)
         return false
       }
+      this.setSkills(data)
     }
+    const topTenJobs = this.topTenJobs
+    const jobArr = []
+    topTenJobs.forEach((job) => {
+      jobArr.push(job.occupation_id)
+    })
+    fetchSkills(jobArr)
   },
   methods: {
     setSkills (skillArr) {
