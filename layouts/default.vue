@@ -75,6 +75,11 @@ export default {
           to: '/counties'
         },
         {
+          icon: ' mdi-format-list-bulleted',
+          title: 'Skills',
+          to: '/skills'
+        },
+        {
           icon: 'mdi-format-list-bulleted',
           title: 'What are Job Zones?',
           to: '/zones'

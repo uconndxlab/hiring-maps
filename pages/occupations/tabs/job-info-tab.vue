@@ -10,7 +10,11 @@
       <v-row justify="center">
         <v-col cols="12" md="6">
           <job-info-list-card v-if="occupation.detailed_work_activities.length" :title="`Detailed Work Activities`" :items="occupation.detailed_work_activities" />
-          <job-info-list-card v-if="occupation.tools_used.length" :title="`Tools Used`" :items="occupation.tools_used" />
+          <card-text :title="`Related Skills for ${occupation.title}`">
+            <v-list-item v-for="skill in relatedSkills" :key="skill.skill_id" :to="`/skills/${skill.skill_id}`">
+              {{ skill.name }}
+            </v-list-item>
+          </card-text>
         </v-col>
         <v-col cols="12" md="6">
           <job-info-list-card v-if="occupation.technology_skills.length" :title="`Technology Skills`" :items="occupation.technology_skills" />
@@ -26,6 +30,11 @@ import { mapGetters } from 'vuex'
 
 export default {
   name: 'JobInfoTabVue',
+  data () {
+    return {
+      relatedSkills: []
+    }
+  },
   computed: {
     ...mapGetters({
       occupation: 'primary/occupation'
@@ -43,6 +52,24 @@ export default {
         return '#E62836'
       }
       return ''
+    }
+  },
+  mounted () {
+    const fetchRelatedSkills = async (occupationId) => {
+      const query = this.$supabase().rpc('getclosestskills', { occupationid: occupationId })
+      const { data, error } = await query
+      if (error) {
+        console.log(error)
+        return false
+      }
+      this.setRelatedSkills(data)
+    }
+    const occupationId = [this.occupation.id]
+    fetchRelatedSkills(occupationId)
+  },
+  methods: {
+    setRelatedSkills (skills) {
+      this.relatedSkills = skills
     }
   }
 }
