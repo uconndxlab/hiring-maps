@@ -25,7 +25,9 @@ export default {
       domElementId: 'map-element',
       chartOptions: {
         region: 'US-CT',
-        resolution: 'provinces'
+        resolution: 'provinces',
+        colors: ['#c2e2f6'],
+        datalessRegionColor: 'transparent'
       }
     }
   },

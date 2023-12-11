@@ -2,7 +2,7 @@
   <v-list-item :to="`${path}`">
     <v-list-item-content>
       <v-list-item-title>
-        {{ textData.name }} ({{ textData.job_postings }})
+        {{ textData.name }}
       </v-list-item-title>
     </v-list-item-content>
   </v-list-item>
@@ -41,9 +41,14 @@ export default {
       this.path = path
     },
     setTextData (item) {
+      console.log(item.name)
       this.textData.name = item.name
       this.textData.job_postings = item.job_postings
     }
   }
 }
 </script>
+
+<style scoped>
+
+</style>

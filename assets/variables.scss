@@ -7,3 +7,16 @@
  * CARDS
  */
 $card-border-radius: 20px;
+$map-default-fill: #c2e2f6;
+$map-hover-fill: #1f6397;
+
+.map-container path:hover {
+  fill: #1f6397;
+}
+.v-toolbar__content {
+  background-color: #cad7d5;
+}
+
+.v-list-item:hover {
+  color: none !important;
+}
