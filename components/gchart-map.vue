@@ -26,8 +26,10 @@ export default {
       chartOptions: {
         region: 'US-CT',
         resolution: 'provinces',
-        colors: ['#c2e2f6'],
+        colors: ['#c2e2f6', '#1f7197'],
         datalessRegionColor: 'transparent'
+        // legend: 'none'
+        // displayMode: 'text'
       }
     }
   },

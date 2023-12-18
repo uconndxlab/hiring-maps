@@ -1,5 +1,7 @@
 /* global google */
 
+const numberFormatter = new Intl.NumberFormat('en-US')
+
 export const state = () => ({
   dataHasBeenRetrieved: false,
   counties: [],
@@ -119,12 +121,14 @@ export const mutations = {
     returnData.addColumn('string', 'id')
     returnData.addColumn('string', 'name')
     returnData.addColumn('number', '')
+    returnData.addColumn({ type: 'string', role: 'tooltip' })
     const data = []
     state.counties.forEach((county) => {
       const dataEntry = [
         county.geocode,
         county.name,
-        0
+        county.jobs_monthly,
+        `${numberFormatter.format(county.jobs_monthly)} monthly job postings`
       ]
       data.push(dataEntry)
     })

@@ -4,19 +4,45 @@
 // $font-size-root: 20px;
 
 /**
+ * COLORS
+ */
+$hm-dark-blue: #1f6397;
+$hm-light-green: #cad7d5;
+$hm-light-blue: #c2e2f6;
+$uconn-blue: #000e2f;
+
+/**
+ * Helpers
+ */
+.light-blue--bg {
+  background-color: $hm-light-blue !important;
+}
+.uconn-blue--bg {
+  background-color: $uconn-blue !important;
+}
+
+/**
  * CARDS
  */
 $card-border-radius: 20px;
-$map-default-fill: #c2e2f6;
-$map-hover-fill: #1f6397;
+$map-default-fill: $hm-light-blue;
+$map-hover-fill: $hm-dark-blue;
 
 .map-container path:hover {
-  fill: #1f6397;
+  fill: $hm-dark-blue;
 }
 .v-toolbar__content {
-  background-color: #cad7d5;
+  background-color: $hm-light-green;
 }
 
 .v-list-item:hover {
   color: none !important;
+}
+
+
+/**
+ * TYPE
+ */
+p {
+  line-height: 1.6;
 }

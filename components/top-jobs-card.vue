@@ -1,24 +1,29 @@
 <template>
-<div>
-<h2 class="section-title">Top Job Postings 2021</h2>
-  <v-row align="start" class="job-cards-container">
-    <v-col v-for="job in topTenJobs"
-    :key="job.name"
-      cols="12"
-      sm="6"
-      md="4"
-      lg="3"
-    >
-    <router-link :to="jobLink(job)" class="job-card">
-      <v-card class="job-card">
-        <v-card-title class="job-title job-card-content">
-        <HomepageListItem :list-item="job" />
-        </v-card-title>
-        <v-card-text class="card-subtitle">{{ numberWithCommas(job.job_postings) }} Jobs Available</v-card-text>
-      </v-card>
-      </router-link>
-    </v-col>
-  </v-row>
+  <div>
+    <h2 class="section-title">
+      Top Job Postings 2021
+    </h2>
+    <v-row align="start" class="job-cards-container">
+      <v-col
+        v-for="job in topTenJobs"
+        :key="job.name"
+        cols="12"
+        sm="6"
+        md="4"
+        lg="3"
+      >
+        <router-link :to="jobLink(job)" class="job-card">
+          <v-card class="job-card">
+            <v-card-title class="job-title job-card-content">
+              <HomepageListItem :list-item="job" />
+            </v-card-title>
+            <v-card-text class="card-subtitle">
+              {{ numberWithCommas(job.job_postings) }} Jobs Available
+            </v-card-text>
+          </v-card>
+        </router-link>
+      </v-col>
+    </v-row>
   </div>
 </template>
 
@@ -71,7 +76,7 @@ export default {
 .job-title {
   display: flex;
   flex-direction: column;
-  align-items: start;
+  align-items: flex-start;
   text-align: start;
 }
 
