@@ -1,8 +1,11 @@
 <template>
-  <div>
-    <h2 class="section-title">
-      Top Job Postings 2021
-    </h2>
+  <div class="mb-4">
+    <div class="section-title">
+      <h2 class="mb-2">
+        Connecticut Top Occupations 2021
+      </h2>
+      <p>Within the year 2021, here are the jobs with the largest number of postings in the state of Connecticut.</p>
+    </div>
     <v-row align="start" class="job-cards-container">
       <v-col
         v-for="job in topTenJobs"
@@ -18,7 +21,7 @@
               <HomepageListItem :list-item="job" />
             </v-card-title>
             <v-card-text class="card-subtitle">
-              {{ numberWithCommas(job.job_postings) }} Jobs Available
+              {{ numberWithCommas(job.job_postings) }} Jobs Posted
             </v-card-text>
           </v-card>
         </router-link>
@@ -29,6 +32,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
+const numberFormatter = new Intl.NumberFormat('en-US')
 
 export default {
   data () {
@@ -48,7 +52,7 @@ export default {
   },
   methods: {
     numberWithCommas (x) {
-      return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+      return numberFormatter.format(x)
     },
     jobLink (job) {
       let type = ''
@@ -69,10 +73,11 @@ export default {
 <style scoped>
 .section-title {
   text-align: left;
-  font-size: 28px;
+  /* font-size: 28px; */
   margin-bottom: 50px;
   margin-top: 50px;
 }
+
 .job-title {
   display: flex;
   flex-direction: column;
