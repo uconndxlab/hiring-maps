@@ -1,2 +1,9 @@
 @import "variables";
 @import "banner";
+
+/**
+ * Algolia Search
+ */
+.v-application ol.ais-Hits-list {
+    padding-left: 0;
+}

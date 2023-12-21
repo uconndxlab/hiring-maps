@@ -32,6 +32,50 @@
         </v-row>
       </v-container>
     </div>
+    <div class="py-5">
+      <v-container>
+        <div>
+          <h2 class="text-center">Explore Jobs &amp; Counties</h2>
+          <p class="text-center">Select a county from the map above, or use the search to find a specific job or occupation.</p>
+          <ais-instant-search index-name="dev_jobs" :search-client="searchClient">
+            <ais-search-box placeholder="Search a county name OR occupation name." />
+            <ais-configure
+              :hitsPerPage="15"
+            />
+            <ais-state-results>
+              <template v-slot:default="{ state: { query } }">
+                <div class="search-results-container pa-3">
+                  <div class="search-results" v-if="query.length > 0">
+                    <ais-index index-name="dev_counties">
+                      <ais-hits>
+                        <template v-slot="{ items }">
+                          <p class="text-overline" v-if="items.length > 0">Counties</p>
+                          <ul>
+                            <li v-for="item in items" :key="item.objectID">
+                              <NuxtLink :to="item.url">{{ item.name }}</NuxtLink>
+                            </li>
+                          </ul>
+                        </template>
+                      </ais-hits>
+                    </ais-index>
+                    <ais-hits>
+                      <template v-slot="{ items }">
+                        <p class="text-overline" v-if="items.length > 0">Jobs &amp; Occupations</p>
+                          <ul>
+                            <li v-for="item in items" :key="item.objectID">
+                              <NuxtLink :to="item.url">{{ item.title }}</NuxtLink>
+                            </li>
+                          </ul>
+                        </template>
+                    </ais-hits>
+                  </div>
+                </div>
+              </template>
+            </ais-state-results>
+          </ais-instant-search>
+        </div>
+      </v-container>
+    </div>
     <v-container>
       <v-row>
         <v-col cols="12">
@@ -49,11 +93,20 @@
 /* global google */
 
 import { mapGetters, mapMutations } from 'vuex'
+import algoliasearch from 'algoliasearch'
 import TopJobsCard from '~/components/top-jobs-card.vue'
 // import JobsByCountyCard from '~/components/jobs-by-county-card.vue'
 
 export default {
   components: { TopJobsCard },
+  data () {
+    return {
+      searchClient: algoliasearch(
+        '6EXZW0OM1T', // Application ID
+        'bfa8d90f359d7a2aeb2cd0fe77915b28' // Search API Key
+      )
+    }
+  },
   computed: {
     ...mapGetters({
       bootstrapped: 'primary/bootstrapped'
