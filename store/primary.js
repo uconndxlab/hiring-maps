@@ -21,6 +21,9 @@ export const getters = {
   counties (state) {
     return state.counties
   },
+  getCountyById: state => (id) => {
+    return state.counties.find(county => `${county.id}` === `${id}`)
+  },
   counties2021 (state) {
     return state.counties2021
   },

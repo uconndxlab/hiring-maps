@@ -20,16 +20,74 @@
         </v-col>
       </v-row>
     </v-container>
-    <div class="light-blue--bg py-5">
+    <div class="section-padding">
       <v-container>
         <v-row>
           <v-col cols="12">
             <h1 class="mb-4">
               The Hiring Maps Project
             </h1>
-            <p>In partnership with the <a href="https://are.uconn.edu">UConn Department of Agriculture &amp; Resource Economics</a> and the <a href="https://dxgroup.core.uconn.edu/">Digital Experience Group</a>, the Hiring Maps project is a go-to resource for navigating Connecticut's job market. Explore counties, track monthly job postings, and discover related job opportunities to make informed career decisions.</p>
+            <p>In partnership with the <a href="https://are.uconn.edu">UConn Department of Agriculture &amp; Resource Economics</a> and the <a href="https://dxgroup.core.uconn.edu/">Digital Experience Group</a>, the Hiring Maps project is a go-to resource for navigating Connecticut's job market. Explore counties and wages, track monthly job postings, and discover related jobs &amp; occupations to make informed career decisions.</p>
           </v-col>
         </v-row>
+      </v-container>
+    </div>
+    <div class="light-blue--bg section-padding">
+      <v-container>
+        <div>
+          <h2 class="text-center">Explore Jobs &amp; Counties</h2>
+          <p class="text-center">Select a county from the map above, or use the search to find a specific job or county.</p>
+          <ais-instant-search index-name="dev_jobs" :search-client="searchClient">
+            <ais-search-box placeholder="Search a county name OR occupation name." />
+            <ais-configure
+              :hitsPerPage="10"
+            />
+            <ais-state-results>
+              <template v-slot:default="{ state: { query } }">
+                <div class="search-results-container px-3 white--bg">
+                  <div class="search-results py-3" v-if="query.length > 0">
+                    <ais-index index-name="dev_counties">
+                      <ais-hits>
+                        <template v-slot="{ items }">
+                          <p class="text-overline mb-0" v-if="items.length > 0">Counties</p>
+                          <v-list two-line v-if="items.length > 0">
+                            <v-list-item v-for="item in items" :key="item.objectID" :to="item.url">
+                              <v-list-item-content>
+                                <v-list-item-title>
+                                  {{ item.name }}
+                                </v-list-item-title>
+                                <v-list-item-subtitle>
+                                  {{ numberFormatter.format(getCountyById(item.id).jobs_monthly) }} Annual Jobs
+                                </v-list-item-subtitle>
+                              </v-list-item-content>
+                            </v-list-item>
+                          </v-list>
+                        </template>
+                      </ais-hits>
+                    </ais-index>
+                    <ais-hits>
+                      <template v-slot="{ items }">
+                        <p class="text-overline mb-0" v-if="items.length > 0">Jobs &amp; Occupations</p>
+                        <v-list two-line v-if="items.length > 0">
+                          <v-list-item v-for="item in items" :key="item.objectID" :to="item.url">
+                            <v-list-item-content>
+                              <v-list-item-title>
+                                {{ item.title }}
+                              </v-list-item-title>
+                              <v-list-item-subtitle>
+                                {{ JSON.parse(item.alternate_titles).join(', ') }}
+                              </v-list-item-subtitle>
+                            </v-list-item-content>
+                          </v-list-item>
+                        </v-list>
+                      </template>
+                    </ais-hits>
+                  </div>
+                </div>
+              </template>
+            </ais-state-results>
+          </ais-instant-search>
+        </div>
       </v-container>
     </div>
     <v-container>
@@ -49,14 +107,25 @@
 /* global google */
 
 import { mapGetters, mapMutations } from 'vuex'
+import algoliasearch from 'algoliasearch'
 import TopJobsCard from '~/components/top-jobs-card.vue'
 // import JobsByCountyCard from '~/components/jobs-by-county-card.vue'
 
 export default {
   components: { TopJobsCard },
+  data () {
+    return {
+      numberFormatter: new Intl.NumberFormat('en-US'),
+      searchClient: algoliasearch(
+        '6EXZW0OM1T', // Application ID
+        'bfa8d90f359d7a2aeb2cd0fe77915b28' // Search API Key
+      )
+    }
+  },
   computed: {
     ...mapGetters({
-      bootstrapped: 'primary/bootstrapped'
+      bootstrapped: 'primary/bootstrapped',
+      getCountyById: 'primary/getCountyById'
     })
   },
   mounted () {

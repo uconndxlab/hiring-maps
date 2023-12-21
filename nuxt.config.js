@@ -9,8 +9,8 @@ export default {
 
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    titleTemplate: '%s - hiring-maps',
-    title: 'hiring-maps',
+    titleTemplate: '%s | Hiring Maps',
+    title: 'Hiring Maps',
     htmlAttrs: {
       lang: 'en'
     },
@@ -32,12 +32,14 @@ export default {
 
   // Global CSS: https://go.nuxtjs.dev/config-css
   css: [
-    '~/assets/style.scss'
+    '~/assets/style.scss',
+    'instantsearch.css/themes/satellite.css'
   ],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
-    '~/plugins/supabase.js'
+    '~/plugins/supabase.js', // PaaS for data storage
+    '~/plugins/algolia.js' // search engine
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
