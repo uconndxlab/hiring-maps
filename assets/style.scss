@@ -2,8 +2,29 @@
 @import "banner";
 
 /**
+ * Additional Colors
+ */
+.white--bg {
+    background-color: #fff !important;
+}
+
+/**
  * Algolia Search
  */
 .v-application ol.ais-Hits-list {
     padding-left: 0;
+}
+
+
+/**
+ * Additional Spacing
+ */
+.section-title {
+    margin-bottom: 50px;
+    margin-top: 50px;
+}
+
+.section-padding {
+    padding-bottom: 50px;
+    padding-top: 50px;
 }

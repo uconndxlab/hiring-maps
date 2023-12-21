@@ -71,13 +71,6 @@ export default {
 </script>
 
 <style scoped>
-.section-title {
-  text-align: left;
-  /* font-size: 28px; */
-  margin-bottom: 50px;
-  margin-top: 50px;
-}
-
 .job-title {
   display: flex;
   flex-direction: column;
