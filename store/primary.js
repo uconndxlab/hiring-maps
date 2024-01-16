@@ -282,7 +282,7 @@ export const actions = {
   },
   async getCounty ({ commit }, id) {
     const query = this.$supabase().from('counties')
-      .select('id, name, state_code, geocode, occupation_annual (*), occupation_monthly (*)')
+      .select('id, name, state_code, description, geocode, occupation_annual (*), occupation_monthly (*)')
       .eq('id', id)
       .eq('occupation_annual.county_id', id)
       .eq('occupation_monthly.county_id', id)

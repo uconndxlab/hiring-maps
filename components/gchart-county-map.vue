@@ -1,7 +1,7 @@
 <template>
   <div class="map-container">
     <v-row justify="center">
-      <v-col cols="10" offset="1">
+      <v-col>
         <div :id="domElementId" />
       </v-col>
     </v-row>
@@ -21,23 +21,21 @@ export default {
   data () {
     return {
       chart: null,
-      mapData: [
-        ['County', 'name', ''],
-        ['CT-01', 'Fairfield', 0],
-        ['CT-02', 'Hartford', 0],
-        ['CT-03', 'Litchfield', 0],
-        ['CT-04', 'Middlesex', 0],
-        ['CT-05', 'New Haven', 0],
-        ['CT-06', 'New London', 0],
-        ['CT-07', 'Tolland', 0],
-        ['CT-08', 'Windham', 0]],
+      mapData: [],
       domElementId: 'map-element',
       chartOptions: {
         colorAxis: {
           minValue: 0
         },
         region: 'US-CT',
-        resolution: 'provinces'
+        resolution: 'provinces',
+        colors: ['#c2e2f6', '#1f7197'],
+        datalessRegionColor: 'transparent',
+        tooltip: {
+          trigger: 'none'
+        },
+        legend: 'none',
+        enableRegionInteractivity: false
       }
     }
   },
@@ -46,24 +44,29 @@ export default {
   },
   methods: {
     drawMap () {
-      this.mapData = google.visualization.arrayToDataTable(this.mapData)
+      const mapData = new google.visualization.DataTable()
+      mapData.addColumn('string', 'id')
+      mapData.addColumn('string', 'name')
+      mapData.addColumn('number', 'Job Postings This Month')
       google.visualization.GeoChart.setMapsSource('/maps_counties')
-
       this.chart = new google.visualization.GeoChart(document.getElementById(this.domElementId))
-      google.visualization.events.addListener(this.chart, 'select', this.chartSelect)
-      this.mapData.setValue(this.county.id - 1, 2, 100)
-      this.chart.draw(this.mapData, this.chartOptions)
-    },
-    chartSelect () {
-      const selected = this.chart.getSelection()[0]
-      for (let i = 0; i < 8; i++) {
-        if (i === selected.row) {
-          this.mapData.setValue(i, 2, 100)
-          this.$nuxt.$options.router.push('/counties/' + (i + 1))
-        } else {
-          this.mapData.setValue(i, 2, 0)
+      const rows = [
+        ['CT-01', 'Fairfield', 0],
+        ['CT-02', 'Hartford', 0],
+        ['CT-03', 'Litchfield', 0],
+        ['CT-04', 'Middlesex', 0],
+        ['CT-05', 'New Haven', 0],
+        ['CT-06', 'New London', 0],
+        ['CT-07', 'Tolland', 0],
+        ['CT-08', 'Windham', 0]
+      ]
+      for (let i = 0; i < rows.length; i++) {
+        if (this.county.geocode === rows[i][0]) {
+          rows[i][2] = this.county.jobs_monthly ?? 100
         }
       }
+      mapData.addRows(rows)
+      this.mapData = mapData
       this.chart.draw(this.mapData, this.chartOptions)
     }
   }
