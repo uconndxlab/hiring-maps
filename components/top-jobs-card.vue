@@ -1,11 +1,9 @@
 <template>
   <div class="mb-4">
-    <div class="section-title">
       <h2 class="mb-2">
         Connecticut Top Occupations 2021
       </h2>
       <p>Within the year 2021, here are the jobs with the largest number of postings in the state of Connecticut.</p>
-    </div>
     <v-row align="start" class="job-cards-container">
       <v-col
         v-for="job in topTenJobs"

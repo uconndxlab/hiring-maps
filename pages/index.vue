@@ -90,16 +90,15 @@
         </div>
       </v-container>
     </div>
-    <v-container>
-      <v-row>
-        <v-col cols="12">
-          <TopJobsCard />
-        </v-col>
-      <!-- <v-col cols="12">
-        <JobsByCountyCard />
-      </v-col> -->
-      </v-row>
-    </v-container>
+    <div class="section-padding">
+      <v-container>
+        <v-row>
+          <v-col cols="12">
+            <TopJobsCard />
+          </v-col>
+        </v-row>
+      </v-container>
+    </div>
   </div>
 </template>
 
