@@ -4,7 +4,7 @@
       <v-container>
         <v-row>
           <v-col cols="12" md="5">
-            <h1 class="mb-4">{{ county.name }}</h1>
+            <h1 class="mb-4">{{ county.name }} County</h1>
             <p class="mb-4">{{ county.description }}</p>
             <CardStatDisplay v-if="monthValue != ''" :title="`Total job postings this month`" :large="monthValue" />
             <CardStatDisplay v-if="yearValue != ''" :title="`Total job postings this year`" :large="yearValue" />
@@ -29,7 +29,7 @@
       </v-row>
       <v-row justify="center" class="mb-5">
         <v-col cols="12">
-          <cardTextVue v-if="jobsWithMostDemand.length" :title="`Occupations with the most demand`">
+          <cardTextVue v-if="jobsWithMostDemand.length" :title="`Occupations in ${county.name} County with High Demand`">
             <v-list>
               <v-list-item v-for="occupation in jobsWithMostDemand" :key="occupation.title" :to="`/occupations/` + occupation.occupation_id.toString()">
                 <v-list-item-content>
