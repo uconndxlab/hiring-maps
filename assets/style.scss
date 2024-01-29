@@ -1,11 +1,48 @@
 @import "variables";
 @import "banner";
 
+
+/**
+ * TYPE
+ */
+ p {
+    line-height: 1.6;
+}
+
+
 /**
  * Additional Colors
  */
 .white--bg {
     background-color: #fff !important;
+}
+
+/**
+ * Helpers
+ */
+.light-blue--bg {
+    background-color: $hm-light-blue !important;
+}
+.uconn-blue--bg {
+    background-color: $uconn-blue !important;
+}
+
+/**
+ * CARDS
+ */
+ $card-border-radius: 20px;
+ $map-default-fill: $hm-light-blue;
+ $map-hover-fill: $hm-dark-blue;
+ 
+.map-container path:hover {
+   fill: $hm-dark-blue;
+}
+.v-toolbar__content {
+   background-color: $hm-light-green;
+}
+ 
+.v-list-item:hover {
+   color: none !important;
 }
 
 /**
@@ -27,4 +64,12 @@
 .section-padding {
     padding-bottom: 50px;
     padding-top: 50px;
+}
+
+
+/**
+ * Breadcrumbs Fixes
+*/
+.v-application .v-breadcrumbs {
+    padding-left: unset;
 }

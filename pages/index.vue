@@ -9,9 +9,13 @@
           </h1>
         </v-col>
         <v-col cols="12" style="padding:0px;">
-          <div class="map-container">
-            <gchart-map />
-          </div>
+          <v-row justify="center">
+            <v-col cols="10" offset="1">
+              <div class="map-container">
+                <gchart-map />
+              </div>
+            </v-col>
+          </v-row>
         </v-col>
         <v-col cols="12">
           <h1 class="map-title-two">
@@ -27,7 +31,10 @@
             <h1 class="mb-4">
               The Hiring Maps Project
             </h1>
-            <p>In partnership with the <a href="https://are.uconn.edu">UConn Department of Agriculture &amp; Resource Economics</a> and the <a href="https://dxgroup.core.uconn.edu/">Digital Experience Group</a>, the Hiring Maps project is a go-to resource for navigating Connecticut's job market. Explore counties and wages, track monthly job postings, and discover related jobs &amp; occupations to make informed career decisions.</p>
+            <p>In partnership with the <a href="https://are.uconn.edu">UConn Department of Agriculture &amp; Resource
+                Economics</a> and the <a href="https://dxgroup.core.uconn.edu/">Digital Experience Group</a>, the Hiring
+              Maps project is a go-to resource for navigating Connecticut's job market. Explore counties and wages, track
+              monthly job postings, and discover related jobs &amp; occupations to make informed career decisions.</p>
           </v-col>
         </v-row>
       </v-container>
@@ -36,12 +43,11 @@
       <v-container>
         <div>
           <h2 class="text-center">Explore Jobs &amp; Counties</h2>
-          <p class="text-center">Select a county from the map above, or use the search to find a specific job or county.</p>
+          <p class="text-center">Select a county from the map above, or use the search to find a specific job or county.
+          </p>
           <ais-instant-search index-name="dev_jobs" :search-client="searchClient">
             <ais-search-box placeholder="Search a county name OR occupation name." />
-            <ais-configure
-              :hitsPerPage="10"
-            />
+            <ais-configure :hitsPerPage="10" />
             <ais-state-results>
               <template v-slot:default="{ state: { query } }">
                 <div class="search-results-container px-3 white--bg">
@@ -112,7 +118,7 @@ import TopJobsCard from '~/components/top-jobs-card.vue'
 
 export default {
   components: { TopJobsCard },
-  data () {
+  data() {
     return {
       numberFormatter: new Intl.NumberFormat('en-US'),
       searchClient: algoliasearch(
@@ -127,7 +133,7 @@ export default {
       getCountyById: 'primary/getCountyById'
     })
   },
-  mounted () {
+  mounted() {
     if (!this.bootstrapped) {
       const unsubscribe = this.$store.subscribe((mutation) => {
         if (mutation.type === 'primary/setDataHasBeenRetrieved') {
@@ -154,12 +160,13 @@ export default {
   font-size: 40px;
   padding-top: 0px;
 }
+
 .map-title {
   font-size: 40px;
   padding-bottom: 0px;
 }
+
 .map-container {
   max-width: 900px;
   margin: 0 auto;
-}
-</style>
+}</style>

@@ -2,6 +2,7 @@
   <div>
     <div class="section-padding">
       <v-container>
+        <breadcrumbs :text="county.name"/>
         <v-row>
           <v-col cols="12" md="5">
             <h1 class="mb-4">{{ county.name }} County</h1>

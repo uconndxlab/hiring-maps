@@ -1,10 +1,6 @@
 <template>
   <div class="map-container">
-    <v-row justify="center">
-      <v-col cols="10" offset="1">
-        <div :id="domElementId" />
-      </v-col>
-    </v-row>
+    <div :id="domElementId" />
   </div>
 </template>
 
