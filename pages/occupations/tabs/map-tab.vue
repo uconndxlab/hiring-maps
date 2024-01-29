@@ -1,9 +1,41 @@
 <template>
   <div class="map-tab">
     <GreyBg>
+      <v-row justify="flex-start">
+        <!-- Job Information Section -->
+        <v-col cols="12" md="5">
+          <v-row justify="center">
+            <v-col cols="12">
+            <h1 style="padding-left:15px;">
+          {{ occupation.title }}
+          </v-chip>
+        </h1>
+              <card-text id="job-decrip-card" v-if="occupation.job_description">
+                {{ occupation.job_description }}
+              </card-text>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="10">
+              <card-stat-display :title="`Average Annual Salary`" :large="annualSalary" :supporting="annualSalaryHourly" />
+              </v-col>
+              <v-col cols="5">
+              <card-stat-display :title="`Monthly Job Postings`" :large="monthlyPostings" />
+              </v-col>
+          </v-row>
+        </v-col>
+
+        <!-- Map Section -->
+        <v-col cols="12" md="6">
+        <div class="custom-map-container">
+          <gchart-map :wait-hook="`primary/setOccupationMonthlyMapData`" />
+          </div>
+        </v-col>
+      </v-row>
+
+      <!-- Line Graph Section -->
       <v-row justify="center">
         <v-col cols="12">
-          <gchart-map :wait-hook="`primary/setOccupationMonthlyMapData`" />
           <line-graph
             :key="graphKey"
             class="mt-6"
@@ -12,17 +44,23 @@
           />
         </v-col>
       </v-row>
+      <!-- add info -->
       <v-row justify="center">
-        <v-col cols="12" md="6">
-          <card-text v-if="occupation.job_description" :title="`Job Description`">
-            {{ occupation.job_description }}
-          </card-text>
-        </v-col>
-        <v-col cols="12" md="6">
-          <card-stat-display :title="`Average Annual Salary`" :large="annualSalary" :supporting="annualSalaryHourly" />
-          <card-stat-display :title="`Monthly Job Postings`" :large="monthlyPostings" />
-        </v-col>
-      </v-row>
+  <v-col cols="12">
+    <v-row>
+      <v-col cols="6">
+        <related-jobs-list-card v-if="related.length" :title="`Explore related occupations and industries`" :related="related" />
+      </v-col>
+      <v-col cols="6">
+        <link-list-card
+          v-if="occupation.additional_information.length"
+          :title="`External links for more information about the field`"
+          :items="occupation.additional_information"
+        />
+      </v-col>
+    </v-row>
+  </v-col>
+</v-row>
     </GreyBg>
   </div>
 </template>
@@ -65,7 +103,8 @@ export default {
       occupation: 'primary/occupation',
       bootstrapped: 'primary/bootstrapped',
       occupationAnnualSalary: 'primary/occupationAnnualSalary',
-      occupationMonthlyPostings: 'primary/occupationMonthlyPostings'
+      occupationMonthlyPostings: 'primary/occupationMonthlyPostings',
+      related: 'primary/relatedOccupations'
     }),
     annualSalary () {
       if (!this.occupationAnnualSalary) {
@@ -131,7 +170,27 @@ export default {
       this.graphDatasets[0].data = data
       this.graphDatasets[0].label = `Monthly Job Postings for ${this.occupation.title}`
       this.graphKey++
+    },
+    navToLink (url) {
+      window.open(url, '_blank')
     }
   }
 }
 </script>
+
+<style scoped>
+.custom-map-container {
+  max-width: 100%;
+}
+
+#job-decrip-card {
+  background-color: transparent;
+  padding-left: 0px !important;
+  box-shadow: none !important;
+}
+
+#job-decrip-card > div.v-card__title.mb-2 {
+  display: none !important;
+}
+
+</style>

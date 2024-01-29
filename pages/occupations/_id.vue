@@ -1,16 +1,5 @@
 <template>
   <div class="single-occupation-page">
-    <v-row class="mt-2 mb-2 ml-2">
-      <v-col cols="12">
-        <h1>
-          {{ occupation.title }}
-          <alt-titles-dropdown :alternate-titles="occupation.alternate_titles" />
-          <v-chip outlined label>
-            Type: {{ occupation.type }}
-          </v-chip>
-        </h1>
-      </v-col>
-    </v-row>
     <div v-if="occupation.type === 'occupation'">
       <v-row justify="center">
         <v-col cols="12">
@@ -82,3 +71,9 @@ export default {
 }
 
 </script>
+
+<style scoped>
+.v-tabs {
+  display: none;
+}
+</style>
