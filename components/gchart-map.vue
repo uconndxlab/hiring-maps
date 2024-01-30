@@ -1,5 +1,5 @@
 <template>
-  <div class="map-container">
+  <div :class="className">
     <div :id="domElementId" />
   </div>
 </template>
@@ -19,11 +19,12 @@ export default {
     return {
       chart: null,
       domElementId: 'map-element',
+      isLoading: true,
       chartOptions: {
         region: 'US-CT',
         resolution: 'provinces',
         colors: ['#c2e2f6', '#1f7197'],
-        datalessRegionColor: 'transparent'
+        datalessRegionColor: 'transparent',
         // legend: 'none'
         // displayMode: 'text'
       }
@@ -33,7 +34,14 @@ export default {
     ...mapGetters({
       bootstrapped: 'primary/bootstrapped',
       mapData: 'primary/mapData'
-    })
+    }),
+    className() {
+      let classes = ['map-container']
+      if (this.isLoading) {
+        classes.push('is-loading')
+      }
+      return classes.join(' ')
+    }
   },
   watch: {
     mapData (newData, oldData) {
@@ -73,6 +81,7 @@ export default {
     },
     chartReady () {
       console.log('Chart is ready.')
+      this.isLoading = false;
     },
     chartSelect () {
       console.log('Chart was selected.')
@@ -89,3 +98,14 @@ export default {
   }
 }
 </script>
+
+
+<style scoped>
+.map-container {
+  transition: 0.3s linear opacity;
+}
+.is-loading {
+  height: 500px;
+  opacity: 0;
+}
+</style>

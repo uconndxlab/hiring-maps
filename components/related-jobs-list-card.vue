@@ -11,6 +11,9 @@
               {{ item.title }}
             </v-list-item-title>
             <v-list-item-subtitle>
+              {{ jobSalary(item) }}
+            </v-list-item-subtitle>
+            <v-list-item-subtitle>
               {{ item.job_description }}
             </v-list-item-subtitle>
           </v-list-item-content>
@@ -22,6 +25,11 @@
 
 <script>
 
+const currencyFormatter = new Intl.NumberFormat('en-US', {
+  style: 'currency',
+  currency: 'USD'
+})
+
 export default {
   props: {
     title: {
@@ -31,6 +39,15 @@ export default {
     related: {
       type: Array,
       required: true
+    }
+  },
+  methods: {
+    jobSalary (job) {
+      if ( job.salary ) {
+        return currencyFormatter.format(job.salary)
+      } else {
+        return 'Salary not available'
+      }
     }
   }
 }

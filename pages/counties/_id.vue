@@ -34,11 +34,14 @@
             <v-list>
               <v-list-item v-for="occupation in jobsWithMostDemand" :key="occupation.title" :to="`/occupations/` + occupation.occupation_id.toString()">
                 <v-list-item-content>
-                  <v-list-item-title>
+                  <v-list-item-title class="mb-1">
                     {{ occupation.name }}
                   </v-list-item-title>
                   <v-list-item-subtitle>
-                    {{ occupation.job_postings }} jobs posted this month
+                    {{ numberWithCommas(occupation.job_postings) }} jobs posted in 2021
+                  </v-list-item-subtitle>
+                  <v-list-item-subtitle>
+                    {{ jobSalary(occupation) }}
                   </v-list-item-subtitle>
                 </v-list-item-content>
               </v-list-item>
@@ -59,6 +62,10 @@ import GchartCountyMap from '~/components/gchart-county-map.vue'
 import cardTextVue from '~/components/card-text.vue'
 
 const numberFormatter = new Intl.NumberFormat('en-US')
+const currencyFormatter = new Intl.NumberFormat('en-US', {
+  style: 'currency',
+  currency: 'USD'
+});
 
 export default {
   components: { lineGraph, GchartCountyMap, cardTextVue },
@@ -121,6 +128,21 @@ export default {
           data: this.job_postings_monthly
         }
       ]
+    }
+  },
+  methods: {
+    numberWithCommas (x) {
+      return numberFormatter.format(x)
+    },
+    currencyFormatter (x) {
+      return currencyFormatter.format(x)
+    },
+    jobSalary(job) {
+      if ( job.salary ) {
+        return `Mean Salary: ${currencyFormatter.format(job.salary)}`
+      } else {
+        return `Salary Data Not Available`
+      }
     }
   }
 }

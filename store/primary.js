@@ -143,7 +143,7 @@ export const mutations = {
     const returnData = new google.visualization.DataTable()
     returnData.addColumn('string', 'id')
     returnData.addColumn('string', 'name')
-    returnData.addColumn('number', 'Job Postings')
+    returnData.addColumn('number', 'Monthly Job Postings')
     const data = []
     state.counties.forEach((county) => {
       state.occupation.occupation_monthly.sort(sortForRecentYearAndMonth)
@@ -153,7 +153,7 @@ export const mutations = {
       const monthlyCountyDataEntry = [
         county.geocode,
         county.name,
-        parseInt(countyMonthly)
+        parseInt(countyMonthly ?? 0)
       ]
       data.push(monthlyCountyDataEntry)
     })
@@ -385,23 +385,13 @@ export const actions = {
   /* fetchRelatedOccupations ({ commit }, relatedOccupations)
   Given a list of occupation.codes return an array of occupations queried by their code */
   async fetchRelatedOccupations ({ commit, state }) {
-    const relatedOccupations = state.occupation.related_occupations
-    const related = []
-    for (let i = 0; i <= relatedOccupations.length; i++) {
-      const query = this.$supabase()
-        .from('occupations')
-        .select('id, code, title, job_description')
-        .eq('code', relatedOccupations[i])
-
-      const { data, error } = await query
-
-      if (error) {
-        console.log(error)
-        return false
-      }
-      related.push(data)
+    const query = this.$supabase().rpc('related_occupations_with_salary', { occ_id: state.occupation.id})
+    const { data, error } = await query
+    if (error) {
+      console.log(error)
+      return false
     }
-    commit('setRelatedOccupations', related.flat())
+    commit('setRelatedOccupations', data.flat())
     return true
   },
   /* fetchOccupation ({ commit }, id)
@@ -479,6 +469,7 @@ export const actions = {
       console.log(error)
       return false
     }
+    console.log(jobs)
     if (jobs && Array.isArray(jobs)) {
       jobs.sort(job => sortForJobListingsObject)
       commit('setTopTenJobs', jobs)

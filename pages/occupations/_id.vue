@@ -7,14 +7,10 @@
         <v-row justify="start">
           <!-- Job Information Section -->
           <v-col cols="12" md="5">
-            <v-row justify="center">
-              <v-col cols="12">
-                <h1>{{ occupation.title }}</h1>
-                <card-text id="job-decrip-card" v-if="occupation.job_description">
-                  {{ occupation.job_description }}
-                </card-text>
-              </v-col>
-            </v-row>
+            <h1 class="mb-4">{{ occupation.title }}</h1>
+            <p class="mb-4">
+              {{ occupation.job_description }}
+            </p>
             <card-stat-display :title="`Average Annual Salary`" :large="annualSalary"
               :supporting="annualSalaryHourly" />
             <card-stat-display :title="`Monthly Job Postings`" :large="monthlyPostings" />
@@ -22,7 +18,7 @@
 
           <!-- Map Section -->
           <v-col cols="12" md="7">
-            <div class="custom-map-container">
+            <div class="custom-map-container mt-3">
               <gchart-map :wait-hook="`primary/setOccupationMonthlyMapData`" />
             </div>
           </v-col>
@@ -60,6 +56,9 @@
 
 import { mapGetters, mapMutations } from 'vuex'
 import lineGraph from '~/components/line-graph.vue'
+
+const numberFormatter = new Intl.NumberFormat('en-US')
+
 export default {
   components: { lineGraph },
   async asyncData ({ params, store }) {
@@ -125,7 +124,7 @@ export default {
       if (!this.occupationMonthlyPostings) {
         return 'No Data'
       }
-      return `${this.occupationMonthlyPostings}`
+      return numberFormatter.format(this.occupationMonthlyPostings)
     }
   },
   mounted() {
@@ -144,6 +143,7 @@ export default {
       const id = this.occupation.id
       const query = this.$supabase().rpc('getjobmonthlypostings', { jobid: id })
       const { data: jobPostingsMonthly, error } = await query
+      console.log(jobPostingsMonthly);
       if (error) {
         console.log(error)
         return false
@@ -161,7 +161,8 @@ export default {
       setOccupationMonthlyMapData: 'primary/setOccupationMonthlyMapData'
     }),
     setGraphData(data) {
-      this.graphDatasets[0].data = data
+      console.log(data);
+      this.graphDatasets[0].data = data;
       this.graphDatasets[0].label = `Monthly Job Postings for ${this.occupation.title}`
       this.graphKey++
     },

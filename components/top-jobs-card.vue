@@ -11,13 +11,15 @@
         cols="12"
         sm="6"
         md="4"
-        lg="3"
       >
         <router-link :to="jobLink(job)" class="job-card">
           <v-card class="job-card">
-            <v-card-title class="job-title job-card-content">
-              <HomepageListItem :list-item="job" />
+            <v-card-title class="font-weight-bold mb-2 job-card-title">
+              <span class="job-card-title-text">{{ job.name }}</span>
             </v-card-title>
+            <v-card-subtitle>
+              {{ jobSalary(job) }}
+            </v-card-subtitle>
             <v-card-text class="card-subtitle">
               {{ numberWithCommas(job.job_postings) }} Jobs Posted
             </v-card-text>
@@ -31,6 +33,10 @@
 <script>
 import { mapGetters } from 'vuex'
 const numberFormatter = new Intl.NumberFormat('en-US')
+const currencyFormatter = new Intl.NumberFormat('en-US', {
+  style: 'currency',
+  currency: 'USD'
+})
 
 export default {
   data () {
@@ -63,41 +69,32 @@ export default {
         id = job.id
       }
       return `/${type}/${id}`
+    },
+    jobSalary(job) {
+      if ( job.salary ) {
+        return `Mean Salary: ${currencyFormatter.format(job.salary)}`
+      } else {
+        return `Salary Data Not Available`
+      }
     }
   }
 }
 </script>
 
 <style scoped>
-.job-title {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  text-align: start;
+.job-card-title {
+  white-space: nowrap;
+  padding-right: 15px;
+  -webkit-line-clamp: 2;
 }
 
+.job-card-title-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 .job-card {
   background-color: #cad7d5;
   text-decoration: none;
-}
-
-.v-card__title {
-  font-size: 15px !important;
-  white-space: nowrap;
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-}
-
-/* .job-card-content {
-  height: 150px;
-} */
-
-v-list-item__title {
-  text-overflow: ellipsis !important;
-  white-space: nowrap !important;
 }
 
 .card-subtitle {
