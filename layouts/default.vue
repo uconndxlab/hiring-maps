@@ -1,6 +1,12 @@
 <template>
   <v-app>
     <uconn-banner />
+    <v-container class="pa-0">
+      <div id="current-period">
+        <strong>Data Current To:</strong>
+        <span>June 2021</span>
+      </div>
+    </v-container>
     <v-main>
       <Nuxt />
     </v-main>
@@ -81,3 +87,13 @@ export default {
 
 }
 </script>
+
+<style scoped>
+#current-period {
+  float: right;
+  border: 1px solid #d3d3d3;
+  border-top: none;
+  padding: 7px;
+
+}
+</style>
