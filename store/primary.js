@@ -131,7 +131,7 @@ export const mutations = {
         county.geocode,
         county.name,
         county.jobs_monthly,
-        `${numberFormatter.format(county.jobs_monthly)} yearly job postings`
+        `${numberFormatter.format(county.jobs_monthly)} monthly job postings`
       ]
       data.push(dataEntry)
     })
