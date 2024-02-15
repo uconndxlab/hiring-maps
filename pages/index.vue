@@ -63,7 +63,7 @@
                                   {{ item.name }}
                                 </v-list-item-title>
                                 <v-list-item-subtitle>
-                                  {{ numberFormatter.format(getCountyById(item.id).jobs_monthly) }} Monthly Jobs
+                                  {{ numberFormatter.format(getCountyById(item.id).jobs_monthly) }} Monthly Job Postings
                                 </v-list-item-subtitle>
                               </v-list-item-content>
                             </v-list-item>
