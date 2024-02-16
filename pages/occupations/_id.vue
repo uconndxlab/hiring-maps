@@ -35,7 +35,7 @@
           <v-col cols="12">
             <v-row>
               <v-col cols="6">
-                <related-jobs-list-card v-if="related.length" :title="`Explore related occupations and industries`" :related="related" />
+                <related-jobs-list-card v-if="related.length" title="Explore Related Occupations" :related="related" />
               </v-col>
               <v-col cols="6">
                 <link-list-card v-if="occupation.additional_information.length"

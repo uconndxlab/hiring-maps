@@ -41,35 +41,7 @@ export default {
     return {
       clipped: true,
       drawer: false,
-      fixed: true,
-      items: [
-        {
-          icon: 'mdi-apps',
-          title: 'Home',
-          to: '/'
-        },
-        {
-          icon: 'mdi-format-list-bulleted',
-          title: 'Occupations',
-          to: '/occupations'
-        },
-        {
-          icon: 'mdi-format-list-bulleted',
-          title: 'Counties',
-          to: '/counties'
-        },
-        {
-          icon: ' mdi-format-list-bulleted',
-          title: 'Skills',
-          to: '/skills'
-        },
-        {
-          icon: 'mdi-format-list-bulleted',
-          title: 'What are Job Zones?',
-          to: '/zones'
-        }
-      ],
-      title: 'Hiring Maps'
+      fixed: true
     }
   },
   created () {

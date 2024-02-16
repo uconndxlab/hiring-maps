@@ -13,8 +13,6 @@ export const state = () => ({
   occupation: {},
   relatedOccupations: {},
   topTenJobs: [],
-  skills: [],
-  skill: {}
 })
 
 export const getters = {
@@ -44,12 +42,6 @@ export const getters = {
   },
   occupation (state) {
     return state.occupation
-  },
-  skills (state) {
-    return state.skills
-  },
-  skill (state) {
-    return state.skill
   },
   relatedOccupations (state) {
     return state.relatedOccupations
@@ -112,9 +104,6 @@ export const mutations = {
   setCounty (state, county) {
     state.county = county
   },
-  setSkills (state, skills) {
-    state.skills = skills
-  },
   setCounties2021 (state, counties2021) {
     state.counties2021 = counties2021
   },
@@ -143,16 +132,17 @@ export const mutations = {
     const returnData = new google.visualization.DataTable()
     returnData.addColumn('string', 'id')
     returnData.addColumn('string', 'name')
+    // returnData.addColumn('string', 'when')
     returnData.addColumn('number', 'Monthly Job Postings')
     const data = []
     state.counties.forEach((county) => {
       state.occupation.occupation_monthly.sort(sortForRecentYearAndMonth)
-      const countyIndex = county.id - 1
-      const countyMonthly = state.occupation.occupation_monthly[countyIndex].job_postings
+      const countyMonthly = state.occupation.occupation_monthly.find(x => String(x.county_id) === String(county.id))?.job_postings
 
       const monthlyCountyDataEntry = [
         county.geocode,
         county.name,
+        // countyMonthly ? `${countyMonthly.month} / ${countyMonthly.year}` : '',
         parseInt(countyMonthly ?? 0)
       ]
       data.push(monthlyCountyDataEntry)
@@ -190,9 +180,6 @@ export const mutations = {
   setOccupation (state, occupation) {
     state.occupation = occupation
   },
-  setSkill (state, skill) {
-    state.skill = skill
-  },
   setRelatedOccupations (state, relatedOccupations) {
     state.relatedOccupations = relatedOccupations
   },
@@ -207,8 +194,6 @@ export const actions = {
     await dispatch('getCounties')
     await dispatch('fetchOccupations')
     await dispatch('fetchTopTenJobs')
-    await dispatch('fetchSkills')
-    // await dispatch('fetchTopJobsByCounty')
     console.log('bootstrapped')
     commit('setDataHasBeenRetrieved', true)
   },
@@ -296,21 +281,6 @@ export const actions = {
     }
     console.log(error)
     return false
-  },
-  async fetchSkill ({ commit }, id) {
-    const query = this.$supabase()
-      .from('skills')
-      .select('*')
-      .eq('id', id)
-    const { data: skill, error } = await query
-    if (error) {
-      console.log(error)
-      return false
-    }
-    if (skill && Array.isArray(skill)) {
-      console.log(skill)
-      commit('setSkill', skill[0])
-    }
   },
   /* countyJobPostingsThisYear ({ state })
   Calls rpc() function countypostingsthisyear with the input parameter of the current countyid
@@ -473,19 +443,6 @@ export const actions = {
     if (jobs && Array.isArray(jobs)) {
       jobs.sort(job => sortForJobListingsObject)
       commit('setTopTenJobs', jobs)
-    }
-  },
-  async fetchSkills ({ commit }) {
-    const query = this.$supabase()
-      .from('skills')
-      .select('*')
-    const { data: skills, error } = await query
-    if (error) {
-      console.log(error)
-      return false
-    }
-    if (skills && Array.isArray(skills)) {
-      commit('setSkills', skills)
     }
   }
 }
