@@ -1,6 +1,5 @@
 {
   "projects": {
-    "staging": "hiring-maps"
-  },
-  "targets": {}
+    "default": "hiring-maps-63410"
+  }
 }
