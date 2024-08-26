@@ -5,7 +5,7 @@
     </v-card-title>
     <v-card-text>
       <v-list>
-        <v-list-item v-for="item in items" :key="item.title" icon @click="navToLink(item.link)">
+        <v-list-item v-for="item in items" :key="item.title" icon >
           <v-list-item-icon>
             <v-icon>
               mdi-link
